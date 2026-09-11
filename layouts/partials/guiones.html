@@ -1,0 +1,201 @@
+<script>
+(function () {
+  // ---------- Menú móvil ----------
+  var cab = document.getElementById('cabecera');
+  var alternar = cab && cab.querySelector('.mt-nav__alternar');
+  if (alternar) {
+    alternar.addEventListener('click', function () {
+      var abierta = cab.classList.toggle('es-abierta');
+      alternar.setAttribute('aria-expanded', abierta ? 'true' : 'false');
+      alternar.setAttribute('aria-label', abierta ? 'Cerrar el menú' : 'Abrir el menú');
+    });
+    cab.querySelectorAll('.mt-nav a').forEach(function (a) {
+      a.addEventListener('click', function () { cab.classList.remove('es-abierta'); alternar.setAttribute('aria-expanded', 'false'); });
+    });
+  }
+
+  var reducido = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- Aparecer al entrar en pantalla ----------
+  var nodos = document.querySelectorAll('.mt-aparece');
+  if (reducido || !('IntersectionObserver' in window)) {
+    nodos.forEach(function (n) { n.classList.add('es-visible'); });
+  } else {
+    var obs = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('es-visible'); obs.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    nodos.forEach(function (n) { obs.observe(n); });
+  }
+
+  // ---------- Marca animada (Design System §4.14, versión web) ----------
+  // Coreografía: la pieza suelta toma impulso, embiste, el anillo no logra cerrarse y expulsa a la vecina
+  // antihoraria. Cinco compases = una vuelta (5,5 s). Tras TRES vueltas, la última embestida entra y no sale
+  // nadie: fusión a un círculo continuo dorado, halo, destello, y el anillo queda encendido respirando.
+  // Luego (decisión web, 2026-09-11) el anillo se apaga despacio, una pieza vuelve a soltarse y todo continúa.
+  var lienzo = document.getElementById('marca-viva');
+  var estatica = document.getElementById('marca-estatica');
+  if (!lienzo || !lienzo.getContext) return;
+  if (reducido) { lienzo.hidden = true; if (estatica) estatica.hidden = false; return; }
+  if (estatica) estatica.hidden = true;
+
+  var ctx = lienzo.getContext('2d');
+  var estilo = getComputedStyle(document.documentElement);
+  var C_TEXTO = (estilo.getPropertyValue('--texto') || '#16202C').trim();
+  var C_ACENTO = (estilo.getPropertyValue('--acento') || '#277064').trim();
+  var C_ORO = '#F2C066', C_PICO = '#FFF6E4';
+
+  var CENTROS = [-18, 54, 126, 198, 270];      // grados, 0° = este, horario
+  var MEDIO = 26, HUECO_MEDIO = 36;             // ±26° = hueco de 20°; ±36° = hueco 0°
+  var R_ANILLO = 30, R_SUELTA = 38, TRAZO = 8;
+  var COMPAS = 1100, VUELTAS = 3;
+  var T_FUSION = 520, T_HALO = 360, T_ENCENDIDO = 5200, T_APAGADO = 900, T_SOLTAR = 700;
+
+  function easeOutCubic(p) { return 1 - Math.pow(1 - p, 3); }
+  function easeOutBack(p, s) { p = p - 1; return p * p * ((s + 1) * p + s) + 1; }
+  function clamp(x, a, b) { return Math.max(a, Math.min(b, x)); }
+  function hex(c) { c = c.replace('#', ''); if (c.length === 3) c = c.split('').map(function (h) { return h + h; }).join(''); return [parseInt(c.slice(0, 2), 16), parseInt(c.slice(2, 4), 16), parseInt(c.slice(4, 6), 16)]; }
+  function mezcla(a, b, t) { var A = hex(a), B = hex(b); return 'rgb(' + Math.round(A[0] + (B[0] - A[0]) * t) + ',' + Math.round(A[1] + (B[1] - A[1]) * t) + ',' + Math.round(A[2] + (B[2] - A[2]) * t) + ')'; }
+  function rad(g) { return g * Math.PI / 180; }
+
+  var k = 1, lado = 96;
+  function ajustar() {
+    var r = lienzo.getBoundingClientRect();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    lado = Math.max(1, Math.round(Math.min(r.width, r.height)));
+    lienzo.width = lado * dpr; lienzo.height = lado * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    k = lado / 96;
+  }
+  ajustar();
+  window.addEventListener('resize', ajustar);
+
+  // Estado del ciclo
+  var vacia = 4;                 // celda vacía (270° al inicio); la pieza suelta flota ahí
+  var compasN = 0;               // compases completados en este ciclo
+  var etapa = 'bucle';           // bucle | cierre | fusion | halo | encendido | apagado | soltar
+  var t0 = null, tEtapa = 0;
+
+  function arco(cx, cy, r, gradoCentro, medio, color, ancho) {
+    ctx.beginPath();
+    ctx.strokeStyle = color; ctx.lineWidth = ancho; ctx.lineCap = 'round';
+    ctx.arc(cx, cy, r, rad(gradoCentro - medio), rad(gradoCentro + medio));
+    ctx.stroke();
+  }
+
+  function dibujarPiezas(radios, colores, medio, sacudida) {
+    var c = 48 * k;
+    for (var i = 0; i < 5; i++) {
+      var r = radios[i] + (radios[i] === R_ANILLO ? sacudida : 0);
+      arco(c, c, r * k, CENTROS[i], medio, colores[i], TRAZO * k);
+    }
+  }
+
+  function dibujarCirculoEncendido(cx, cy, r, glow, nucleo, alphaSolido, respiracion) {
+    // Receta de neón (§4.14): halo ceñido, halo ancho, trazo base, filamento.
+    var pasos = [
+      { blur: 18 * respiracion, ancho: TRAZO, color: C_ORO, alpha: 0.9 },
+      { blur: 37.8 * respiracion, ancho: TRAZO, color: C_ORO, alpha: 0.55 },
+      { blur: 0, ancho: TRAZO, color: C_ORO, alpha: 1 },
+      { blur: 0, ancho: TRAZO * 0.43, color: mezcla(C_ORO, C_PICO, 0.45 + 0.55 * nucleo), alpha: 1 }
+    ];
+    pasos.forEach(function (p, idx) {
+      ctx.save();
+      ctx.globalAlpha = p.alpha * alphaSolido;
+      if (p.blur > 0) { ctx.shadowBlur = (p.blur + (idx < 2 ? glow : 0)) * k; ctx.shadowColor = C_ORO; }
+      ctx.beginPath(); ctx.strokeStyle = p.color; ctx.lineWidth = p.ancho * k;
+      ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+    });
+  }
+
+  var activo = false;
+
+  function cuadro(ahora) {
+    if (!activo) return;
+    if (t0 === null) { t0 = ahora; tEtapa = ahora; }
+    var t = ahora - tEtapa;
+    ctx.clearRect(0, 0, lado, lado);
+    var c = 48 * k;
+    var radios = [R_ANILLO, R_ANILLO, R_ANILLO, R_ANILLO, R_ANILLO];
+    var colores = [C_TEXTO, C_TEXTO, C_TEXTO, C_TEXTO, C_TEXTO];
+    var sacudida = 0, i;
+
+    if (etapa === 'bucle' || etapa === 'cierre') {
+      var entrando = vacia, saliendo = (entrando + 4) % 5;
+      var esCierre = etapa === 'cierre';
+      radios[entrando] = R_SUELTA; colores[entrando] = C_ACENTO;
+      if (t < 280) {                                         // 1 impulso
+        radios[entrando] = 38 + 8 * easeOutCubic(t / 280);
+      } else if (t < 450) {                                  // 2 embestida
+        var p2 = Math.pow((t - 280) / 170, 2.8);
+        radios[entrando] = 46 - 16 * p2;
+        colores[entrando] = mezcla(C_ACENTO, C_TEXTO, p2);
+      } else if (!esCierre && t < 840) {                     // 3 expulsión
+        var p3 = (t - 450) / 390;
+        radios[entrando] = R_ANILLO; colores[entrando] = C_TEXTO;
+        radios[saliendo] = 30 + 8 * easeOutBack(p3, 4.0);
+        colores[saliendo] = mezcla(C_TEXTO, C_ACENTO, clamp(p3 * 2, 0, 1));
+        sacudida = 0.7 * Math.cos(3 * Math.PI * p3) * (1 - p3);
+      } else if (!esCierre && t < COMPAS) {                  // 4 reposo
+        radios[entrando] = R_ANILLO; colores[entrando] = C_TEXTO;
+        radios[saliendo] = R_SUELTA; colores[saliendo] = C_ACENTO;
+      } else if (!esCierre) {                                // fin del compás
+        vacia = saliendo; compasN++; tEtapa = ahora;
+        if (compasN >= VUELTAS * 5) etapa = 'cierre';
+        return requestAnimationFrame(cuadro);
+      } else if (t < 570) {                                  // cierre: la última entra y nadie sale
+        radios[entrando] = R_ANILLO; colores[entrando] = C_TEXTO;
+      } else { etapa = 'fusion'; tEtapa = ahora; return requestAnimationFrame(cuadro); }
+      dibujarPiezas(radios, colores, MEDIO, sacudida);
+    }
+    else if (etapa === 'fusion') {
+      var pf = clamp(t / T_FUSION, 0, 1), ef = easeOutCubic(pf);
+      var medio = MEDIO + (HUECO_MEDIO - MEDIO) * ef;
+      var solido = clamp((ef - 0.45) / 0.40, 0, 1);
+      var colorArco = mezcla(C_TEXTO, C_ORO, ef);
+      for (i = 0; i < 5; i++) colores[i] = colorArco;
+      dibujarPiezas(radios, colores, medio, 0);
+      if (solido > 0) dibujarCirculoEncendido(c, c, R_ANILLO * k, 0, 0.25 * ef, solido, 1);
+      if (pf >= 1) { etapa = 'halo'; tEtapa = ahora; }
+    }
+    else if (etapa === 'halo') {
+      var ph = clamp(t / T_HALO, 0, 1);
+      var destello = Math.max(0, 1 - ph * 2.4);
+      dibujarCirculoEncendido(c, c, R_ANILLO * k, 32 * destello, Math.max(0.25, destello), 1, 1);
+      ctx.save(); ctx.globalAlpha = 0.55 * (1 - ph);
+      ctx.beginPath(); ctx.strokeStyle = mezcla(C_ORO, C_PICO, destello); ctx.lineWidth = TRAZO * k * 0.6;
+      ctx.arc(c, c, R_ANILLO * k * (1 + 0.42 * ph), 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+      if (ph >= 1) { etapa = 'encendido'; tEtapa = ahora; }
+    }
+    else if (etapa === 'encendido') {
+      var resp = 1 + 0.10 * Math.sin((ahora - t0) / 3200 * Math.PI * 2);
+      dibujarCirculoEncendido(c, c, R_ANILLO * k, 0, 0.25, 1, resp);
+      if (t >= T_ENCENDIDO) { etapa = 'apagado'; tEtapa = ahora; }
+    }
+    else if (etapa === 'apagado') {                          // el brillo se retira y vuelve el anillo de cinco
+      var pa = clamp(t / T_APAGADO, 0, 1), ea = easeOutCubic(pa);
+      var colorVuelta = mezcla(C_ORO, C_TEXTO, ea);
+      for (i = 0; i < 5; i++) colores[i] = colorVuelta;
+      dibujarPiezas(radios, colores, HUECO_MEDIO - (HUECO_MEDIO - MEDIO) * ea, 0);
+      if (pa < 0.6) dibujarCirculoEncendido(c, c, R_ANILLO * k, 0, 0.25, 1 - pa / 0.6, 1);
+      if (pa >= 1) { etapa = 'soltar'; tEtapa = ahora; vacia = 4; }
+    }
+    else if (etapa === 'soltar') {                           // una pieza se suelta y el ciclo continúa
+      var ps = clamp(t / T_SOLTAR, 0, 1);
+      radios[vacia] = 30 + 8 * easeOutBack(ps, 4.0);
+      colores[vacia] = mezcla(C_TEXTO, C_ACENTO, clamp(ps * 1.6, 0, 1));
+      dibujarPiezas(radios, colores, MEDIO, 0);
+      if (ps >= 1) { etapa = 'bucle'; compasN = 0; tEtapa = ahora; }
+    }
+    requestAnimationFrame(cuadro);
+  }
+
+  // Solo anima cuando la marca está en pantalla y la pestaña visible
+  function arrancar() { if (!activo) { activo = true; t0 = null; requestAnimationFrame(cuadro); } }
+  function detener() { activo = false; }
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(function (es) { es.forEach(function (e) { e.isIntersecting ? arrancar() : detener(); }); }, { threshold: 0.05 }).observe(lienzo);
+  } else { arrancar(); }
+  document.addEventListener('visibilitychange', function () { document.hidden ? detener() : arrancar(); });
+})();
+</script>

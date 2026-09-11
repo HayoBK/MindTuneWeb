@@ -1,0 +1,31 @@
+{{- /* Fondo fijo: cielo + tres capas de nubes que derivan a distinta velocidad. Las nubes son ruido fractal
+       (feTurbulence) recortado a "algodón" con feComponentTransfer; se generan una vez y solo se trasladan (barato). */ -}}
+<div class="mt-cielo" aria-hidden="true">
+  <div class="mt-cielo__luz"></div>
+  {{- range $i, $c := slice (dict "clase" "lejos" "semilla" 7 "freq" "0.0035 0.010" "y" 0.02 "umbral" 0.62 "ganancia" 3.2)
+                         (dict "clase" "medio" "semilla" 3 "freq" "0.0028 0.008" "y" 0.18 "umbral" 0.58 "ganancia" 3.6)
+                         (dict "clase" "cerca" "semilla" 11 "freq" "0.0022 0.0065" "y" 0.40 "umbral" 0.55 "ganancia" 4.2) }}
+  <div class="mt-cielo__capa mt-cielo__capa--{{ $c.clase }}">
+    <svg viewBox="0 0 3000 1000" preserveAspectRatio="none">
+      <defs>
+        <filter id="nube-{{ $c.clase }}" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="{{ $c.freq }}" numOctaves="4" seed="{{ $c.semilla }}" stitchTiles="stitch" result="ruido"/>
+          <feColorMatrix in="ruido" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0.33 0.33 0.33 0 0" result="gris"/>
+          <feComponentTransfer in="gris" result="algodon">
+            <feFuncA type="linear" slope="{{ $c.ganancia }}" intercept="{{ printf "%.2f" (sub 0 (mul $c.umbral $c.ganancia)) }}"/>
+          </feComponentTransfer>
+          <feGaussianBlur in="algodon" stdDeviation="6"/>
+        </filter>
+        <linearGradient id="desvanece-{{ $c.clase }}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+          <stop offset="{{ $c.y }}" stop-color="#fff" stop-opacity="1"/>
+          <stop offset="0.85" stop-color="#fff" stop-opacity="1"/>
+          <stop offset="1" stop-color="#fff" stop-opacity="0.2"/>
+        </linearGradient>
+        <mask id="mascara-{{ $c.clase }}"><rect width="3000" height="1000" fill="url(#desvanece-{{ $c.clase }})"/></mask>
+      </defs>
+      <rect width="3000" height="1000" fill="#fff" filter="url(#nube-{{ $c.clase }})" mask="url(#mascara-{{ $c.clase }})"/>
+    </svg>
+  </div>
+  {{- end }}
+</div>

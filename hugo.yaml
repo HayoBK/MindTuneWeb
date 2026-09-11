@@ -1,0 +1,65 @@
+baseURL: "https://mindtune.cl/"
+locale: "es-CL"
+title: "MindTune"
+defaultContentLanguage: "es"
+enableRobotsTXT: true
+disableKinds: ["taxonomy", "term", "section", "rss"]
+timeZone: "America/Santiago"
+
+params:
+  description: "Terapia de sonido para tinnitus, dentro de tu música. Un programa personalizado a la frecuencia de tu tinnitus, para escuchar una hora al día bajo indicación de tu profesional."
+  # Estado que se muestra en el chip de la portada
+  estado: "Próximamente · en piloto clínico"
+  correo: "contacto@mindtune.cl"
+  # Razón social de la EIRL: NO se muestra en la web por ahora (decisión de Hayo, 2026-09-11). Cuando la entregue, va aquí y en privacidad/términos.
+  razon_social: ""
+  ciudad: "Santiago de Chile"
+  # Publicación de referencia (D-L8: la eficacia se remite al paper, no se afirma en la web)
+  paper:
+    cita: "Henríquez P, et al. Brain Sci. 2026;16:644."
+    url: "https://doi.org/10.3390/brainsci16060644"
+  # Formulario de noticias (Brevo, D-W3). Pegar aquí la URL "action" del formulario creado en Brevo
+  # (Contactos → Formularios → Compartir → HTML → atributo action). Vacío = el botón abre un correo.
+  brevo:
+    action: ""
+    # Nombre del campo de correo que espera Brevo (por defecto EMAIL)
+    campo_email: "EMAIL"
+
+menu:
+  main:
+    - name: "Terapias"
+      url: "/#terapias"
+      weight: 10
+    - name: "Origen"
+      url: "/#origen"
+      weight: 20
+    - name: "Tus datos"
+      url: "/#tus-datos"
+      weight: 30
+    - name: "Soporte"
+      pageRef: "/soporte"
+      weight: 40
+  footer:
+    - name: "Privacidad"
+      pageRef: "/privacidad"
+      weight: 10
+    - name: "Aviso médico"
+      pageRef: "/aviso-medico"
+      weight: 20
+    - name: "Términos"
+      pageRef: "/terminos"
+      weight: 30
+    - name: "Soporte"
+      pageRef: "/soporte"
+      weight: 40
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: false
+  tableOfContents:
+    startLevel: 2
+    endLevel: 2
+
+minify:
+  minifyOutput: true

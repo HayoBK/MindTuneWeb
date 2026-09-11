@@ -1,0 +1,20 @@
+<footer class="mt-pie">
+  <div class="mt-contenedor">
+    <div class="mt-vidrio mt-pie__caja">
+      <div class="mt-pie__fila">
+        <a class="mt-lockup" href="{{ "/" | relURL }}" aria-label="MindTune, inicio">
+          {{ partial "marca.html" . }}
+          <span>MindTune</span>
+        </a>
+        <nav class="mt-pie__enlaces" aria-label="Legal y soporte">
+          {{- range .Site.Menus.footer }}<a href="{{ .URL }}">{{ .Name }}</a>{{ end }}
+        </nav>
+      </div>
+      <div class="mt-pie__fila mt-pie__legal">
+        <div><a href="mailto:{{ .Site.Params.correo }}">{{ .Site.Params.correo }}</a></div>
+        <div>Hecho en {{ .Site.Params.ciudad }}</div>
+      </div>
+      <p class="mt-pie__aviso">MindTune no diagnostica ni mide el tinnitus y no reemplaza la evaluación audiológica. Los parámetros de la terapia los fija un profesional. Ante cambios en tu audición, consulta a tu médico. <a href="{{ "/aviso-medico/" | relURL }}">Aviso médico</a>.</p>
+    </div>
+  </div>
+</footer>

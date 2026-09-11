@@ -1,0 +1,17 @@
+<header class="mt-cabecera" id="cabecera">
+  <div class="mt-contenedor mt-cabecera__fila">
+    <a class="mt-lockup" href="{{ "/" | relURL }}" aria-label="MindTune, inicio">
+      {{ partial "marca.html" . }}
+      <span>MindTune</span>
+    </a>
+    <button class="mt-nav__alternar" type="button" aria-expanded="false" aria-controls="nav-principal" aria-label="Abrir el menú">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <nav class="mt-nav" id="nav-principal" aria-label="Principal">
+      {{- range .Site.Menus.main }}
+      <a href="{{ .URL | relURL }}">{{ .Name }}</a>
+      {{- end }}
+      <a class="mt-boton mt-boton--secundario" href="{{ "/#noticias" | relURL }}">Recibir aviso</a>
+    </nav>
+  </div>
+</header>

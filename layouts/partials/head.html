@@ -1,0 +1,23 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{- $titulo := .Site.Title }}{{ if not .IsHome }}{{ $titulo = printf "%s · %s" .Title .Site.Title }}{{ end }}
+{{- $descripcion := .Params.description | default .Site.Params.description }}
+<title>{{ $titulo }}</title>
+<meta name="description" content="{{ $descripcion }}">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0E1620" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F5F8FA" media="(prefers-color-scheme: light)">
+<link rel="canonical" href="{{ .Permalink }}">
+<link rel="icon" href="{{ "favicon.svg" | absURL }}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ "brand/mindtune_appicon.svg" | absURL }}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{ .Site.Title }}">
+<meta property="og:title" content="{{ $titulo }}">
+<meta property="og:description" content="{{ $descripcion }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:locale" content="es_CL">
+{{- with resources.Get "images/og.png" }}<meta property="og:image" content="{{ .Permalink }}">{{ end }}
+<meta name="twitter:card" content="summary">
+{{- range .AlternativeOutputFormats }}<link rel="{{ .Rel }}" type="{{ .MediaType.Type }}" href="{{ .Permalink }}">{{ end }}
+{{- $css := resources.Get "css/mindtune.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}">

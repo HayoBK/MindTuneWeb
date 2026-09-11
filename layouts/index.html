@@ -1,0 +1,122 @@
+{{ define "main" }}
+{{- $p := .Site.Params }}
+
+<section class="mt-contenedor mt-portada" aria-labelledby="titular">
+  <div class="mt-portada__marca" role="img" aria-label="Marca MindTune: un anillo abierto cuya pieza suelta se reintegra">
+    <canvas id="marca-viva" width="380" height="380"></canvas>
+    <div id="marca-estatica" hidden>{{ partial "marca.html" . }}</div>
+  </div>
+  <div class="mt-vidrio mt-portada__texto">
+    <span class="mt-chip">{{ $p.estado }}</span>
+    <h1 id="titular">Terapia de sonido para reentrenar el cerebro auditivo con tinnitus.</h1>
+    <p class="mt-portada__bajada">Terapias de sonido incrustadas en tu música.</p>
+    <div class="mt-portada__acciones">
+      <a class="mt-boton mt-boton--primario" href="#noticias">Avísame cuando esté disponible</a>
+      <a class="mt-boton mt-boton--secundario" href="#terapias">Conocer las terapias</a>
+    </div>
+    <p class="mt-portada__nota">Para iPhone y Android · En español · Bajo indicación de tu profesional</p>
+  </div>
+</section>
+
+<section class="mt-seccion" id="terapias" aria-labelledby="t-terapias">
+  <div class="mt-contenedor">
+    <div class="mt-seccion__intro mt-seccion__intro--centrada mt-aparece">
+      <div class="mt-etiqueta">Cuatro terapias</div>
+      <h2 id="t-terapias">Distintas formas de sonido para distintos momentos del tinnitus.</h2>
+      <p>Todas dentro de una misma app, todas con tu música. Tu profesional indica cuál te corresponde.</p>
+    </div>
+    <div class="mt-terapias">
+      <article class="mt-terapia mt-terapia--destacada mt-aparece">
+        <div class="mt-terapia__texto">
+          <div class="mt-terapia__icono" style="color: var(--t-filtrado);">{{ partial "icono-terapia.html" "filtrado" }}</div>
+          <h3>Inducción de filtrado con Música</h3>
+          <p>Inducir filtrado con tu música. La forma más simple de empezar: eliges tu música y la app hace el resto.</p>
+        </div>
+        <div class="mt-terapia__ilustracion" aria-hidden="true">
+          <svg viewBox="0 0 320 200" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <g class="mt-il-flotante"><circle cx="230" cy="52" r="26" fill="#8FB8DE" fill-opacity="0.16"/></g>
+            <g class="mt-il-flotante"><circle cx="278" cy="98" r="16" fill="#8FB8DE" fill-opacity="0.22"/></g>
+            <g class="mt-il-flotante"><circle cx="196" cy="118" r="11" fill="#8FB8DE" fill-opacity="0.28"/></g>
+            <g class="mt-il-nota" stroke="#8FB8DE" stroke-width="9" transform="translate(28 20) scale(6.2)">
+              <circle cx="7" cy="16.5" r="2.6" stroke-width="1.5"/>
+              <path d="M9.6 16.5V5.5" stroke-width="1.5"/>
+              <path d="M9.6 5.5c2.2 0 3.4 1.2 4.4 2.6" stroke-width="1.5"/>
+            </g>
+            <path class="mt-il-nivel" d="M132 72 C 160 98, 190 150, 250 164 C 272 169, 292 170, 306 170" stroke="#8FB8DE" stroke-width="9"/>
+            <circle class="mt-il-onda" cx="306" cy="170" r="7" fill="#8FB8DE"/>
+          </svg>
+        </div>
+      </article>
+      <article class="mt-terapia mt-aparece">
+        <div class="mt-terapia__icono" style="color: var(--t-mmidst);">{{ partial "icono-terapia.html" "mmidst" }}</div>
+        <h3>mMIDST</h3>
+        <p>Tonos modificadores dentro de tu música, ajustados a la frecuencia de tu tinnitus.</p>
+      </article>
+      <article class="mt-terapia mt-aparece">
+        <div class="mt-terapia__icono" style="color: var(--t-inhibicion);">{{ partial "icono-terapia.html" "inhibicion" }}</div>
+        <h3>Inhibición residual</h3>
+        <p>Ruido acotado para contener.</p>
+      </article>
+      <article class="mt-terapia mt-aparece">
+        <div class="mt-terapia__icono" style="color: var(--t-hiperacusia);">{{ partial "icono-terapia.html" "hiperacusia" }}</div>
+        <h3>Manejo de hiperacusia</h3>
+        <p>Manejar la tolerancia a los ruidos externos.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="mt-seccion" id="origen" aria-labelledby="t-origen">
+  <div class="mt-contenedor mt-dos">
+    <div class="mt-vidrio mt-tarjeta mt-aparece">
+      <div class="mt-etiqueta">De dónde viene</div>
+      <h3 id="t-origen">Nace de un programa clínico con años de desarrollo.</h3>
+      <p>MindTune lleva al teléfono el programa de tinnitus de <a href="https://www.alemana.cl" rel="noopener">Clínica Alemana de Santiago</a>, desarrollado durante años por el equipo que lo atiende, e investigado junto a la Universidad de Chile. La terapia mMIDST se describe en un ensayo clínico publicado en <a href="{{ $p.paper.url }}" rel="noopener"><em>Brain Sciences</em> (2026)</a>.</p>
+    </div>
+    <div class="mt-vidrio mt-tarjeta mt-aparece">
+      <div class="mt-etiqueta">Dónde hacer la terapia</div>
+      <h3>Se indica en consulta.</h3>
+      <p>La terapia parte con una evaluación audiológica y la medición de la frecuencia de tu tinnitus. Hoy la realiza el programa de tinnitus de Clínica Alemana de Santiago.</p>
+      {{- range hugo.Data.centros }}
+      <a class="mt-boton mt-boton--secundario mt-boton--compacto" href="{{ .url }}" rel="noopener">{{ .boton }} →</a>
+      {{- end }}
+    </div>
+  </div>
+</section>
+
+<section class="mt-seccion" id="tus-datos" aria-labelledby="t-datos">
+  <div class="mt-contenedor">
+    <div class="mt-vidrio mt-tarjeta mt-tarjeta--fila mt-aparece">
+      <div style="display: flex; flex-direction: column; gap: 8px; max-width: 640px;">
+        <div class="mt-etiqueta">Tus datos</div>
+        <h3 id="t-datos">Todo se queda en tu teléfono.</h3>
+        <p>Sin cuenta, sin correo, sin servidor. Nada sale de tu teléfono salvo que tú lo autorices.</p>
+      </div>
+      <a class="mt-boton mt-boton--secundario mt-boton--compacto" href="{{ "/privacidad/" | relURL }}">Política de privacidad →</a>
+    </div>
+  </div>
+</section>
+
+<section class="mt-seccion" id="noticias" aria-labelledby="t-noticias">
+  <div class="mt-contenedor">
+    <div class="mt-vidrio mt-vidrio--fuerte mt-tarjeta mt-noticias mt-aparece">
+      <div class="mt-etiqueta">Próximamente</div>
+      <h3 id="t-noticias">Te avisamos cuando MindTune esté disponible.</h3>
+      <p>Deja tu correo y recibirás un aviso cuando la app llegue a la App Store y a Google Play. Pocos correos, sin publicidad.</p>
+      {{- if $p.brevo.action }}
+      <form class="mt-noticias__formulario" method="post" action="{{ $p.brevo.action }}" target="_blank" rel="noopener">
+        <label class="mt-solo-lector" for="correo">Tu correo</label>
+        <input id="correo" type="email" name="{{ $p.brevo.campo_email }}" placeholder="tu@correo.cl" autocomplete="email" required>
+        <input type="text" name="email_address_check" value="" class="mt-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <input type="hidden" name="locale" value="es">
+        <button class="mt-boton mt-boton--primario" type="submit">Quiero el aviso</button>
+      </form>
+      <p class="mt-noticias__legal">Recibirás un correo para confirmar. Puedes darte de baja en cualquier momento. La lista la gestiona Brevo; el detalle está en la <a href="{{ "/privacidad/" | relURL }}">política de privacidad</a>.</p>
+      {{- else }}
+      <a class="mt-boton mt-boton--primario" href="mailto:{{ $p.correo }}?subject=Quiero%20recibir%20el%20aviso%20de%20MindTune">Quiero el aviso</a>
+      <p class="mt-noticias__legal">Se abre un correo a {{ $p.correo }}. Usaremos tu dirección solo para avisarte; puedes pedir que la borremos cuando quieras. Detalle en la <a href="{{ "/privacidad/" | relURL }}">política de privacidad</a>.</p>
+      {{- end }}
+    </div>
+  </div>
+</section>
+{{ end }}
