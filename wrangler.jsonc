@@ -1,6 +1,6 @@
 // Configuración del Worker de Cloudflare que sirve el sitio como archivos estáticos.
-// Cloudflare (Workers & Pages → mindtuneweb) corre primero el "build command" (hugo --gc --minify)
-// y después "npx wrangler deploy", que lee este archivo y publica la carpeta public/.
+// Publicación desde el Mac (Claude Code): HUGO_ENVIRONMENT=production hugo --gc --minify && npx wrangler deploy
+// wrangler lee este archivo, sube la carpeta public/ y registra los dos dominios.
 {
   "name": "mindtuneweb",
   "compatibility_date": "2026-09-01",
@@ -8,5 +8,9 @@
     "directory": "./public",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
-  }
+  },
+  "routes": [
+    { "pattern": "mindtune.cl", "custom_domain": true },
+    { "pattern": "www.mindtune.cl", "custom_domain": true }
+  ]
 }
