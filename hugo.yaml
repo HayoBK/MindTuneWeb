@@ -7,38 +7,49 @@ disableKinds: ["taxonomy", "term", "section", "rss"]
 timeZone: "America/Santiago"
 
 params:
-  description: "Terapia de sonido para tinnitus, dentro de tu música. Un programa personalizado a la frecuencia de tu tinnitus, para escuchar una hora al día bajo indicación de tu profesional."
+  description: "App de terapias de sonido para tinnitus. Define tu Perfil de Tinnitus, recibe las terapias que le corresponden y aprende a manejarlo. Puedes usarla por tu cuenta o junto a un equipo de salud. En pilotaje: acceso anticipado abierto."
   # Estado que se muestra en el chip de la portada
-  estado: "Próximamente · en piloto clínico"
+  estado: "Versión piloto · acceso anticipado"
   correo: "contacto@mindtune.cl"
   # Razón social de la EIRL: NO se muestra en la web por ahora (decisión de Hayo, 2026-09-11). Cuando la entregue, va aquí y en privacidad/términos.
   razon_social: ""
   ciudad: "Santiago de Chile"
+  # ---- Fondo de dosel (v2, 2026-09-12) ----
+  # Nombre del archivo de video, SIN extensión, dentro de static/video/. Vacío = dosel dibujado en SVG.
+  # El video se activa solo si existe static/video/<nombre>.mp4. Ver bin/preparar-video-dosel.sh
+  # y GUIA-VIDEO-DE-FONDO.md para conseguirlo y optimizarlo.
+  video_fondo: ""
+  video_poster: ""
   # Publicación de referencia (D-L8: la eficacia se remite al paper, no se afirma en la web)
   paper:
     cita: "Henríquez P, et al. Brain Sci. 2026;16:644."
     url: "https://doi.org/10.3390/brainsci16060644"
-  # Formulario de noticias (Brevo, D-W3). Pegar aquí la URL "action" del formulario creado en Brevo
-  # (Contactos → Formularios → Compartir → HTML → atributo action). Vacío = el botón abre un correo.
+  # Formulario de acceso anticipado (Brevo, D-W3). Dos listas: pacientes y profesionales de salud.
+  # Pegar la URL "action" de cada formulario de Brevo (Contactos → Formularios → Compartir → HTML).
+  # Ambas vacías = el envío arma un correo a params.correo con lo que la persona escribió.
   brevo:
-    action: ""
+    action_paciente: ""
+    action_clinico: ""
     # Nombre del campo de correo que espera Brevo (por defecto EMAIL)
     campo_email: "EMAIL"
 
 menu:
   main:
+    - name: "Cómo funciona"
+      url: "/#modalidades"
+      weight: 10
+    - name: "Tu perfil"
+      url: "/#perfil"
+      weight: 20
     - name: "Terapias"
       url: "/#terapias"
-      weight: 10
-    - name: "Origen"
-      url: "/#origen"
-      weight: 20
-    - name: "Tus datos"
-      url: "/#tus-datos"
       weight: 30
+    - name: "Aprender"
+      url: "/#aprender"
+      weight: 40
     - name: "Soporte"
       pageRef: "/soporte"
-      weight: 40
+      weight: 50
   footer:
     - name: "Privacidad"
       pageRef: "/privacidad"

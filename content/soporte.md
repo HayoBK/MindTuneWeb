@@ -31,4 +31,4 @@ Borrar la app borra todo lo que estaba en tu teléfono. Si habías encendido alg
 
 ## Estado de la app
 
-MindTune está en piloto clínico y se entrega por invitación. Si quieres que te avisemos cuando esté disponible, [déjanos tu correo](/#noticias).
+MindTune está en pilotaje y todavía no se publica en las tiendas. Hay un programa de acceso anticipado, con dos caminos: para personas con tinnitus y para profesionales de salud. [Déjanos tu correo](/#anticipado) y te avisamos cuando haya cupo.

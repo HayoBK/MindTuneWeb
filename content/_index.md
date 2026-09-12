@@ -1,4 +1,4 @@
 ---
 title: "MindTune"
-description: "Terapia de sonido para tinnitus, dentro de tu música. Un programa personalizado a la frecuencia de tu tinnitus, para escuchar una hora al día bajo indicación de tu profesional."
+description: "App de terapias de sonido para tinnitus. Define tu Perfil de Tinnitus, recibe las terapias que le corresponden y aprende a manejarlo. Puedes usarla por tu cuenta o junto a un equipo de salud. En pilotaje: acceso anticipado abierto."
 ---

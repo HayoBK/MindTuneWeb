@@ -50,7 +50,13 @@ y (2) es la portada del producto: qué hace, dónde se indica, y suscripción a 
    legales dicen "MindTune". Cuando decida publicarla va en `hugo.yaml → params.razon_social` y en
    `privacidad.md` / `terminos.md` (regenerar privacidad con el script). Correo público: `contacto@mindtune.cl`.
 6. **Menos es más en esta etapa** (Hayo, 2026-09-11): sin duraciones de terapias, sin detalles clínicos, sin
-   "TRAC" en ningún texto visible; las cuatro terapias se nombran y se muestran con su ícono y su frase, nada más.
+   "TRAC" en ningún texto visible; cada terapia lleva su ícono, su frase y **a qué perfil sirve**, nada más.
+6-bis. **Las dos ideas que la página tiene que dejar clarísimas** (Hayo, 2026-09-12): (a) la **doble
+   modalidad** — se usa sola, y *además* puede acompañarla un equipo de salud, que es complemento y nunca
+   requisito; (b) **no hay un tinnitus**: hay perfiles distintos, la app trae un proceso de perfilamiento
+   y terapias específicas para cada perfil, más un programa formativo. Prohibido volver a "una terapia para
+   cada momento del tinnitus". Clínica Alemana se menciona **en una línea**, como la variante presencial del
+   modelo MindTune; sin tarjeta de derivación ni botón de tomar hora (por eso `data/centros.yaml` quedó sin uso).
 7. Lo editable por dato va en `hugo.yaml` (`params`) o en `data/centros.yaml`; no en plantillas.
 8. Commits chicos, en español.
 
@@ -60,29 +66,41 @@ y (2) es la portada del producto: qué hace, dónde se indica, y suscripción a 
   `main` + botón noticias; menú móvil), `pie.html` (menú `footer`, razón social, aviso),
   `marca.html` (SVG de la marca; `(dict "animada" true)` dibuja el trazo al cargar), `guiones.html`
   (menú móvil + aparición por `IntersectionObserver`, respeta `prefers-reduced-motion`).
-- **Dirección visual v1 "cielo" (2026-09-11):** fondo fijo de cielo con tres capas de nubes que derivan
-  (`partials/cielo.html`, ruido fractal SVG, sin imágenes), recuadros de vidrio claros (`.mt-vidrio`), y el
-  oscuro de la app reservado a las "ventanas flotantes" de las cuatro terapias (`.mt-terapia`). La marca
-  animada es la protagonista de la portada: `<canvas id="marca-viva">` dibujado en `partials/guiones.html`
-  con la coreografía del Design System §4.14 (tres vueltas → cierre dorado con halo → respira → se apaga →
-  una pieza se suelta → continúa). Con `prefers-reduced-motion` se muestra la marca estática.
-- `layouts/index.html` → portada: marca animada + recuadro con titular y CTA; Cuatro terapias (destacada
-  Inducción de filtrado con ilustración animada, luego mMIDST, Inhibición residual, Manejo de hiperacusia;
-  íconos en `partials/icono-terapia.html`, matices §4.15); Origen (programa clínico de Clínica Alemana +
-  paper) y Dónde hacer la terapia (`data/centros.yaml`); Tus datos (una línea); Noticias.
+- **Dirección visual v2 "dosel" (2026-09-12):** manda la **paleta oscura de la app** en todo el sitio
+  (`:root` = tokens del modo oscuro; no hay modo claro en la web). Fondo fijo `partials/dosel.html`:
+  degradado + dosel de hojas + luz que se filtra + velo + grano, todo SVG y CSS, sin imágenes externas.
+  Las hojas están **generadas**: `bin/generar_dosel.py` escribe `partials/dosel-capas.html` (no editar a
+  mano; volver a correr el script si se cambia la geometría). Tres capas: la lejana va borrosa y quieta,
+  las dos cercanas rotan unos grados alrededor de su nacimiento con periodos distintos. Sobre eso,
+  superficies de vidrio oscuro (`.mt-vidrio`).
+  **La marca es estática**: se eliminó la coreografía en canvas de la v1 (y con ella `partials/cielo.html`).
+- **Video de fondo (opcional):** si `params.video_fondo` trae un nombre y existe `static/video/<nombre>.mp4`,
+  el video reemplaza a las capas dibujadas. `bin/preparar-video-dosel.sh` lo convierte y `GUIA-VIDEO-DE-FONDO.md`
+  dice de dónde sacarlo. La CSP ya trae `media-src 'self'`.
+- `layouts/index.html` → portada: marca estática + chip de estado + titular; **Dos maneras de usarla**
+  (autónoma / con equipo de salud); **Perfil de Tinnitus** (por qué hay perfiles distintos + las cuatro
+  dimensiones); **Terapias** (las cuatro, cada una con a qué perfil sirve; íconos en
+  `partials/icono-terapia.html`, matices §4.15); **Aprender** (programa formativo, cuatro ramas) junto a
+  **De dónde viene** (programa clínico + la línea de la variante presencial en Clínica Alemana + paper);
+  Tus datos; **Acceso anticipado** (el bloque con más peso de la página).
 - `layouts/_default/single.html` → páginas interiores con índice lateral (`.TableOfContents`, h2).
   Render hooks: tablas envueltas para scroll horizontal; enlaces externos con `rel="noopener"`.
 - `content/`: `_index.md`, `privacidad.md` (generado), `aviso-medico.md`, `soporte.md`,
-  `terminos.md` (borrador; lo revisa el abogado).
+  `terminos.md` (borrador; lo revisa el abogado). Los cuatro se alinearon a la doble modalidad el
+  2026-09-12: ya no dicen que la terapia se hace "bajo indicación" como condición de uso.
 - `static/_headers`: cabeceras de seguridad para Cloudflare Pages (CSP permite `form-action` a
   Brevo). Si se agrega un script o dominio externo, actualizar la CSP.
 
-## Formulario de noticias (Brevo, D-W3)
+## Formulario de acceso anticipado (Brevo, D-W3)
 
-`hugo.yaml → params.brevo.action` vacío ⇒ el botón abre un `mailto:`. Cuando Hayo cree el
-formulario en Brevo (Contactos → Formularios → Compartir → HTML), pegar el `action` ahí y
-verificar el nombre del campo (`EMAIL` por defecto). El honeypot `email_address_check` y
-`locale=es` ya están en la plantilla.
+Un solo formulario con **dos caminos**: *Tengo tinnitus* / *Soy profesional de salud* (radios
+`PERFIL`). Al elegir clínico aparecen dos campos más (`PROFESION`, `LUGAR`), cambia el texto del
+botón y el de la línea legal. Todo eso lo hace `partials/guiones.html`.
+
+`hugo.yaml → params.brevo.action_paciente` y `action_clinico`: **dos listas distintas**. Si la
+del camino elegido está vacía, el envío arma un `mailto:` a `params.correo` con lo escrito, con
+asunto distinto según el camino. El honeypot `email_address_check` y `locale=es` ya están.
+Hay `<noscript>` con el correo directo.
 
 ## Regenerar `content/privacidad.md`
 

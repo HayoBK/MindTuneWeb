@@ -1,0 +1,23 @@
+{{- /* Fondo fijo v2 "dosel" (2026-09-12): oscuro de la app + luz que se filtra + hojas que se mueven.
+       Si params.video_fondo tiene un nombre de archivo (sin extensión) y existe static/video/<nombre>.mp4,
+       el video reemplaza a las capas dibujadas; si no, manda el dosel generado (bin/generar_dosel.py).
+       Nunca hay imágenes externas: todo es SVG o un archivo propio. */ -}}
+{{- $v := .Site.Params.video_fondo }}
+{{- $hayVideo := and $v (fileExists (printf "static/video/%s.mp4" $v)) }}
+<div class="mt-dosel{{ if $hayVideo }} es-video{{ end }}" aria-hidden="true">
+  <div class="mt-dosel__base"></div>
+  {{- if $hayVideo }}
+  <video class="mt-dosel__video" autoplay muted loop playsinline preload="metadata"
+         {{ with .Site.Params.video_poster }}poster="{{ . | relURL }}"{{ end }}>
+    {{- if fileExists (printf "static/video/%s.webm" $v) }}
+    <source src="{{ (printf "/video/%s.webm" $v) | relURL }}" type="video/webm">
+    {{- end }}
+    <source src="{{ (printf "/video/%s.mp4" $v) | relURL }}" type="video/mp4">
+  </video>
+  {{- else }}
+  {{ partial "dosel-capas.html" . }}
+  {{- end }}
+  <div class="mt-dosel__luz"></div>
+  <div class="mt-dosel__velo"></div>
+  <div class="mt-dosel__grano"></div>
+</div>

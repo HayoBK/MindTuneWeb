@@ -119,4 +119,6 @@ de seguir enviando. La versión y la fecha están arriba.
 
 Este sitio (mindtune.cl) no usa cookies ni herramientas de análisis o publicidad de terceros. Se aloja en Cloudflare, que como proveedor de infraestructura registra datos técnicos de las visitas (dirección IP, navegador) para servir la página y protegerla de abusos.
 
-Si te suscribes a las noticias de MindTune, tu correo se guarda en Brevo (Sendinblue SAS, Francia), el servicio que usamos para enviar los correos, bajo su [política de privacidad](https://www.brevo.com/es/legal/privacypolicy/). Solo lo usamos para avisarte sobre la app. Cada correo incluye un enlace para darte de baja; también puedes pedir que lo borremos escribiendo a contacto@mindtune.cl.
+Si te inscribes en el acceso anticipado, guardamos lo que escribas en ese formulario: tu correo y, si lo pones, tu nombre. Si te identificas como profesional de salud, guardamos además tu profesión o especialidad y la ciudad y el lugar donde atiendes. Nada de eso es información de salud tuya, y no te pedimos ningún dato clínico en este sitio.
+
+Esos datos se guardan en Brevo (Sendinblue SAS, Francia), el servicio que usamos para enviar los correos, bajo su [política de privacidad](https://www.brevo.com/es/legal/privacypolicy/). Los usamos solo para contactarte por el piloto de MindTune y coordinar el acceso; no se comparten con nadie más y no se usan para publicidad. Cada correo incluye un enlace para darte de baja, y puedes pedir que borremos tus datos escribiendo a contacto@mindtune.cl.

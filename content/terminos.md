@@ -14,7 +14,7 @@ MindTune es una aplicación desarrollada y publicada por el equipo de MindTune (
 
 ## 2. Para qué es
 
-MindTune entrega terapias de sonido para tinnitus y registra su uso, para que la hagas bajo indicación y seguimiento de tu equipo clínico. Es para uso personal, por personas mayores de 18 años.
+MindTune entrega terapias de sonido para tinnitus y registra su uso. Puedes usarla por tu cuenta o, si lo eliges, compartiendo tu perfil con un equipo clínico que te acompañe. Es para uso personal, por personas mayores de 18 años.
 
 ## 3. Lo que no garantizamos
 

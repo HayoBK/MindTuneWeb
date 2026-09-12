@@ -2,84 +2,125 @@
 {{- $p := .Site.Params }}
 
 <section class="mt-contenedor mt-portada" aria-labelledby="titular">
-  <div class="mt-portada__marca" role="img" aria-label="Marca MindTune: un anillo abierto cuya pieza suelta se reintegra">
-    <canvas id="marca-viva" width="380" height="380"></canvas>
-    <div id="marca-estatica" hidden>{{ partial "marca.html" . }}</div>
+  <div class="mt-portada__marca" role="img" aria-label="Marca MindTune">{{ partial "marca.html" . }}</div>
+  <span class="mt-chip">{{ $p.estado }}</span>
+  <h1 id="titular">No hay un tinnitus. Hay el tuyo.</h1>
+  <p class="mt-portada__bajada">MindTune es una app de terapias de sonido para tinnitus. Te acompaña a definir tu <strong>Perfil de Tinnitus</strong>, te propone las terapias que le corresponden y te enseña, paso a paso, de qué se trata todo esto. Puedes usarla por tu cuenta. Y, si quieres, junto a un equipo de salud que evalúe tu tinnitus.</p>
+  <div class="mt-portada__acciones">
+    <a class="mt-boton mt-boton--primario" href="#anticipado">Quiero probarla</a>
+    <a class="mt-boton mt-boton--secundario" href="#anticipado" data-perfil="clinico">Soy profesional de salud</a>
   </div>
-  <div class="mt-vidrio mt-portada__texto">
-    <span class="mt-chip">{{ $p.estado }}</span>
-    <h1 id="titular">Terapia de sonido para reentrenar el cerebro auditivo con tinnitus.</h1>
-    <p class="mt-portada__bajada">Terapias de sonido incrustadas en tu música.</p>
-    <div class="mt-portada__acciones">
-      <a class="mt-boton mt-boton--primario" href="#noticias">Avísame cuando esté disponible</a>
-      <a class="mt-boton mt-boton--secundario" href="#terapias">Conocer las terapias</a>
+  <p class="mt-portada__nota">Versión piloto · todavía no está en las tiendas · iPhone primero · en español</p>
+</section>
+
+<section class="mt-seccion" id="modalidades" aria-labelledby="t-modalidades">
+  <div class="mt-contenedor">
+    <div class="mt-seccion__intro mt-seccion__intro--centrada mt-aparece">
+      <div class="mt-etiqueta">Dos maneras de usarla</div>
+      <h2 id="t-modalidades">Sola en tu teléfono. Y también con tu equipo de salud.</h2>
+      <p>MindTune está completa dentro del teléfono: el perfilamiento, las terapias y el programa formativo funcionan sin cuenta y sin conexión. Y está construida para que, además, un equipo de salud pueda entrar al proceso contigo.</p>
     </div>
-    <p class="mt-portada__nota">Para iPhone y Android · En español · Bajo indicación de tu profesional</p>
+    <div class="mt-dos">
+      <div class="mt-vidrio mt-tarjeta mt-modalidad mt-aparece">
+        <div class="mt-modalidad__rotulo">Por tu cuenta</div>
+        <h3>Empiezas hoy, sin pedirle permiso a nadie.</h3>
+        <p>Respondes el perfilamiento en la app, la app te propone las terapias que calzan con tu perfil, y aprendes a tu ritmo. No necesitas derivación, ni cita, ni que nadie te habilite nada.</p>
+        <ul>
+          <li>Todo el perfilamiento se responde en el teléfono.</li>
+          <li>Las cuatro terapias están disponibles desde el primer día.</li>
+          <li>Nadie más ve tus datos.</li>
+        </ul>
+      </div>
+      <div class="mt-vidrio mt-tarjeta mt-modalidad mt-aparece">
+        <div class="mt-modalidad__rotulo">Y, además, con tu equipo de salud</div>
+        <h3>Un profesional que te evalúe afina el perfil.</h3>
+        <p>Si tienes —o quieres tener— un profesional que evalúe tu tinnitus, puedes compartir tu perfil con él. La evaluación presencial agrega lo que la app sola no alcanza: audiometría, medición de tu tinnitus, examen del oído, mirada clínica. Con eso, tu perfil se afina y la elección de la terapia se vuelve mucho más precisa.</p>
+        <ul>
+          <li>Tu equipo ve tu perfil y tu registro, y puede ajustar la indicación.</li>
+          <li>Lo vinculas tú, cuando quieras, y lo desvinculas cuando quieras.</li>
+          <li>Es un complemento, nunca un requisito.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="mt-seccion" id="perfil" aria-labelledby="t-perfil">
+  <div class="mt-contenedor">
+    <div class="mt-seccion__intro mt-aparece">
+      <div class="mt-etiqueta">Perfil de Tinnitus</div>
+      <h2 id="t-perfil">Antes de elegir la terapia hay que saber de qué tinnitus estamos hablando.</h2>
+      <p>Dos personas con el mismo pitido pueden necesitar caminos distintos. Una convive además con hipersensibilidad a los sonidos; a otra el tinnitus le cambia al apretar la mandíbula; a una tercera la audición le viene bajando hace años. MindTune te guía por un proceso estructurado —los mismos instrumentos que usa el programa clínico— para ir construyendo tu Perfil de Tinnitus dentro de la app. Ese perfil es lo que decide qué terapias tienen sentido para ti.</p>
+    </div>
+    <div class="mt-rejilla-4">
+      <div class="mt-vidrio mt-dato mt-aparece"><h3>Cómo te afecta</h3><p>Cuánto ocupa tu día, tu sueño, tu concentración y tu ánimo.</p></div>
+      <div class="mt-vidrio mt-dato mt-aparece"><h3>Cómo lo oyes</h3><p>Cuándo aparece, cuándo aprieta, cómo suena y con qué se tapa.</p></div>
+      <div class="mt-vidrio mt-dato mt-aparece"><h3>Los sonidos de afuera</h3><p>Si el problema es solo el tinnitus, o si además el mundo suena demasiado fuerte.</p></div>
+      <div class="mt-vidrio mt-dato mt-aparece"><h3>Qué lo modifica</h3><p>Mandíbula, cuello, postura, silencio: lo que lo sube y lo que lo baja.</p></div>
+    </div>
+    <div class="mt-vidrio mt-tarjeta mt-tarjeta--fila mt-aparece" style="margin-top: 16px;">
+      <p class="mt-tarjeta__nota" style="max-width: 68ch;">El perfil se arma a tu ritmo y se puede usar la app desde antes de terminarlo. Está pensado para completarse sin ir a ninguna parte, y para mejorar bastante cuando un profesional agrega su evaluación.</p>
+      <a class="mt-boton mt-boton--secundario mt-boton--compacto" href="#modalidades">Cómo entra tu equipo →</a>
+    </div>
   </div>
 </section>
 
 <section class="mt-seccion" id="terapias" aria-labelledby="t-terapias">
   <div class="mt-contenedor">
-    <div class="mt-seccion__intro mt-seccion__intro--centrada mt-aparece">
-      <div class="mt-etiqueta">Cuatro terapias</div>
-      <h2 id="t-terapias">Distintas formas de sonido para distintos momentos del tinnitus.</h2>
-      <p>Todas dentro de una misma app, todas con tu música. Tu profesional indica cuál te corresponde.</p>
+    <div class="mt-seccion__intro mt-aparece">
+      <div class="mt-etiqueta">Terapias de sonido</div>
+      <h2 id="t-terapias">Varias terapias, no una. Cuál te toca depende de tu perfil.</h2>
+      <p>Cada una atiende un problema distinto. MindTune las reúne en un mismo lugar, todas con tu música o con sonido generado en el teléfono, y te muestra cuál corresponde a tu Perfil de Tinnitus.</p>
     </div>
     <div class="mt-terapias">
-      <article class="mt-terapia mt-terapia--destacada mt-aparece">
-        <div class="mt-terapia__texto">
-          <div class="mt-terapia__icono" style="color: var(--t-filtrado);">{{ partial "icono-terapia.html" "filtrado" }}</div>
-          <h3>Inducción de filtrado con Música</h3>
-          <p>Inducir filtrado con tu música. La forma más simple de empezar: eliges tu música y la app hace el resto.</p>
-        </div>
-        <div class="mt-terapia__ilustracion" aria-hidden="true">
-          <svg viewBox="0 0 320 200" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <g class="mt-il-flotante"><circle cx="230" cy="52" r="26" fill="#8FB8DE" fill-opacity="0.16"/></g>
-            <g class="mt-il-flotante"><circle cx="278" cy="98" r="16" fill="#8FB8DE" fill-opacity="0.22"/></g>
-            <g class="mt-il-flotante"><circle cx="196" cy="118" r="11" fill="#8FB8DE" fill-opacity="0.28"/></g>
-            <g class="mt-il-nota" stroke="#8FB8DE" stroke-width="9" transform="translate(28 20) scale(6.2)">
-              <circle cx="7" cy="16.5" r="2.6" stroke-width="1.5"/>
-              <path d="M9.6 16.5V5.5" stroke-width="1.5"/>
-              <path d="M9.6 5.5c2.2 0 3.4 1.2 4.4 2.6" stroke-width="1.5"/>
-            </g>
-            <path class="mt-il-nivel" d="M132 72 C 160 98, 190 150, 250 164 C 272 169, 292 170, 306 170" stroke="#8FB8DE" stroke-width="9"/>
-            <circle class="mt-il-onda" cx="306" cy="170" r="7" fill="#8FB8DE"/>
-          </svg>
-        </div>
+      <article class="mt-terapia mt-aparece">
+        <div class="mt-terapia__icono" style="color: var(--t-filtrado);">{{ partial "icono-terapia.html" "filtrado" }}</div>
+        <h3>Inducción de filtrado con música</h3>
+        <p>Tu propia música, ajustada al nivel que corresponde a tu tinnitus. La forma más simple de empezar: eliges la música y la app hace el resto.</p>
+        <p class="mt-terapia__perfil">Para casi cualquier perfil, y suele ser el punto de partida.</p>
       </article>
       <article class="mt-terapia mt-aparece">
         <div class="mt-terapia__icono" style="color: var(--t-mmidst);">{{ partial "icono-terapia.html" "mmidst" }}</div>
         <h3>mMIDST</h3>
-        <p>Tonos modificadores dentro de tu música, ajustados a la frecuencia de tu tinnitus.</p>
+        <p>Tonos ajustados a la frecuencia de tu tinnitus, incrustados dentro de la música que tú elijas.</p>
+        <p class="mt-terapia__perfil">Para perfiles con una frecuencia de tinnitus identificable. Es la terapia descrita en el ensayo clínico publicado.</p>
       </article>
       <article class="mt-terapia mt-aparece">
         <div class="mt-terapia__icono" style="color: var(--t-inhibicion);">{{ partial "icono-terapia.html" "inhibicion" }}</div>
         <h3>Inhibición residual</h3>
-        <p>Ruido acotado para contener.</p>
+        <p>Ruido acotado alrededor de tu frecuencia, para usar en momentos puntuales.</p>
+        <p class="mt-terapia__perfil">Para los perfiles en que el tinnitus aprieta por ratos y se necesita algo a mano.</p>
       </article>
       <article class="mt-terapia mt-aparece">
         <div class="mt-terapia__icono" style="color: var(--t-hiperacusia);">{{ partial "icono-terapia.html" "hiperacusia" }}</div>
         <h3>Manejo de hiperacusia</h3>
-        <p>Manejar la tolerancia a los ruidos externos.</p>
+        <p>Un reentrenamiento gradual de la tolerancia a los sonidos del ambiente.</p>
+        <p class="mt-terapia__perfil">Para los perfiles en que además molestan los sonidos del mundo.</p>
       </article>
     </div>
+    <p class="mt-tarjeta__nota mt-aparece" style="margin: 18px 0 0;">La terapia mMIDST se describe en un ensayo clínico publicado: <a href="{{ $p.paper.url }}" rel="noopener">{{ $p.paper.cita }}</a></p>
   </div>
 </section>
 
-<section class="mt-seccion" id="origen" aria-labelledby="t-origen">
+<section class="mt-seccion" id="aprender" aria-labelledby="t-aprender">
   <div class="mt-contenedor mt-dos">
     <div class="mt-vidrio mt-tarjeta mt-aparece">
-      <div class="mt-etiqueta">De dónde viene</div>
-      <h3 id="t-origen">Nace de un programa clínico con años de desarrollo.</h3>
-      <p>MindTune lleva al teléfono el programa de tinnitus de <a href="https://www.alemana.cl" rel="noopener">Clínica Alemana de Santiago</a>, desarrollado durante años por el equipo que lo atiende, e investigado junto a la Universidad de Chile. La terapia mMIDST se describe en un ensayo clínico publicado en <a href="{{ $p.paper.url }}" rel="noopener"><em>Brain Sciences</em> (2026)</a>.</p>
+      <div class="mt-etiqueta">Programa formativo</div>
+      <h3 id="t-aprender">Entender el tinnitus es parte del trabajo.</h3>
+      <p>MindTune no es solo un reproductor de terapias. Trae un programa de aprendizaje que te acompaña desde el primer día: qué es el tinnitus y de dónde sale, por qué el silencio no ayuda, cómo se usa cada terapia y qué se puede esperar de ella, y qué cosas de la vida diaria lo mueven. Lecciones cortas, en orden, escritas por el equipo clínico que ve estos pacientes.</p>
+      <div class="mt-ramas">
+        <span class="mt-rama-chip">Entender el tinnitus</span>
+        <span class="mt-rama-chip">Las terapias</span>
+        <span class="mt-rama-chip">Hiperacusia</span>
+        <span class="mt-rama-chip">Cómo usar MindTune</span>
+      </div>
     </div>
     <div class="mt-vidrio mt-tarjeta mt-aparece">
-      <div class="mt-etiqueta">Dónde hacer la terapia</div>
-      <h3>Se indica en consulta.</h3>
-      <p>La terapia parte con una evaluación audiológica y la medición de la frecuencia de tu tinnitus. Hoy la realiza el programa de tinnitus de Clínica Alemana de Santiago.</p>
-      {{- range hugo.Data.centros }}
-      <a class="mt-boton mt-boton--secundario mt-boton--compacto" href="{{ .url }}" rel="noopener">{{ .boton }} →</a>
-      {{- end }}
+      <div class="mt-etiqueta">De dónde viene</div>
+      <h3>Nace de un programa clínico con años encima.</h3>
+      <p>MindTune lleva al teléfono el modelo de trabajo que el equipo desarrolló durante años atendiendo pacientes con tinnitus, e investigó junto a la Universidad de Chile.</p>
+      <p>Existe también una variante presencial del modelo MindTune: se realiza como el programa de intervención de tinnitus de <a href="https://www.alemana.cl" rel="noopener">Clínica Alemana de Santiago</a>.</p>
+      <p class="mt-tarjeta__nota">La terapia mMIDST fue publicada en <a href="{{ $p.paper.url }}" rel="noopener"><em>Brain Sciences</em> (2026)</a>.</p>
     </div>
   </div>
 </section>
@@ -87,35 +128,87 @@
 <section class="mt-seccion" id="tus-datos" aria-labelledby="t-datos">
   <div class="mt-contenedor">
     <div class="mt-vidrio mt-tarjeta mt-tarjeta--fila mt-aparece">
-      <div style="display: flex; flex-direction: column; gap: 8px; max-width: 640px;">
+      <div style="display: flex; flex-direction: column; gap: 8px; max-width: 660px;">
         <div class="mt-etiqueta">Tus datos</div>
         <h3 id="t-datos">Todo se queda en tu teléfono.</h3>
-        <p>Sin cuenta, sin correo, sin servidor. Nada sale de tu teléfono salvo que tú lo autorices.</p>
+        <p>Sin cuenta, sin correo, sin servidor. Nada sale de tu teléfono salvo que tú lo autorices, y cada cosa que puede salir se autoriza por separado.</p>
       </div>
       <a class="mt-boton mt-boton--secundario mt-boton--compacto" href="{{ "/privacidad/" | relURL }}">Política de privacidad →</a>
     </div>
   </div>
 </section>
 
-<section class="mt-seccion" id="noticias" aria-labelledby="t-noticias">
+<section class="mt-seccion" id="anticipado" aria-labelledby="t-anticipado">
   <div class="mt-contenedor">
-    <div class="mt-vidrio mt-vidrio--fuerte mt-tarjeta mt-noticias mt-aparece">
-      <div class="mt-etiqueta">Próximamente</div>
-      <h3 id="t-noticias">Te avisamos cuando MindTune esté disponible.</h3>
-      <p>Deja tu correo y recibirás un aviso cuando la app llegue a la App Store y a Google Play. Pocos correos, sin publicidad.</p>
-      {{- if $p.brevo.action }}
-      <form class="mt-noticias__formulario" method="post" action="{{ $p.brevo.action }}" target="_blank" rel="noopener">
-        <label class="mt-solo-lector" for="correo">Tu correo</label>
-        <input id="correo" type="email" name="{{ $p.brevo.campo_email }}" placeholder="tu@correo.cl" autocomplete="email" required>
+    <div class="mt-vidrio mt-vidrio--fuerte mt-anticipado mt-aparece">
+      <div class="mt-seccion__intro" style="margin-bottom: 0;">
+        <div class="mt-etiqueta">Acceso anticipado</div>
+        <h2 id="t-anticipado">MindTune está en pilotaje. Buscamos a quienes la usen primero.</h2>
+        <p>Todavía no está en la App Store ni en Google Play. Antes de publicarla queremos que la prueben dos grupos distintos, por razones distintas. Déjanos tu correo y te avisamos apenas haya un cupo.</p>
+      </div>
+
+      <div class="mt-anticipado__perfiles">
+        <div class="mt-perfil-tarjeta">
+          <h3>Early adopter · con tinnitus</h3>
+          <p>Personas con tinnitus dispuestas a usar la app durante algunas semanas y a contarnos qué funciona, qué no se entiende y qué falta. No necesitas estar en tratamiento ni haber consultado antes.</p>
+        </div>
+        <div class="mt-perfil-tarjeta">
+          <h3>Early adopter · clínico</h3>
+          <p><strong>No hace falta ser especialista en tinnitus.</strong> Nos interesa igual —o más— la mirada de profesionales que ven pacientes con tinnitus sin que sea su foco principal: otorrinos, neurólogos, fonoaudiólogos, médicos generales y de familia, kinesiólogos, odontólogos, psicólogos. Verás el lado clínico: cómo se ve el perfil de un paciente y cómo se acompaña desde ahí.</p>
+        </div>
+      </div>
+
+      <form class="mt-formulario" id="formulario-anticipado" method="post"
+            data-accion-paciente="{{ $p.brevo.action_paciente }}"
+            data-accion-clinico="{{ $p.brevo.action_clinico }}"
+            data-correo="{{ $p.correo }}"
+            {{ with $p.brevo.action_paciente }}action="{{ . }}" target="_blank" rel="noopener"{{ end }}>
+        <div class="mt-conmutador" role="radiogroup" aria-label="Cuéntanos quién eres">
+          <label><input type="radio" name="PERFIL" value="paciente" checked><span>Tengo tinnitus</span></label>
+          <label><input type="radio" name="PERFIL" value="clinico"><span>Soy profesional de salud</span></label>
+        </div>
+
+        <div class="mt-campos">
+          <div class="mt-campo">
+            <label for="c-correo">Tu correo</label>
+            <input id="c-correo" type="email" name="{{ $p.brevo.campo_email }}" placeholder="tu@correo.cl" autocomplete="email" required>
+          </div>
+          <div class="mt-campo">
+            <label for="c-nombre">Tu nombre <span style="color: var(--apagado);">(opcional)</span></label>
+            <input id="c-nombre" type="text" name="NOMBRE" placeholder="Cómo te llamamos" autocomplete="name">
+          </div>
+          <div class="mt-campo mt-solo-clinico" hidden>
+            <label for="c-profesion">Tu profesión o especialidad</label>
+            <select id="c-profesion" name="PROFESION">
+              <option value="">Elige una</option>
+              <option>Otorrinolaringología</option>
+              <option>Neurología</option>
+              <option>Fonoaudiología / audiología</option>
+              <option>Medicina general o familiar</option>
+              <option>Psicología o psiquiatría</option>
+              <option>Kinesiología</option>
+              <option>Odontología</option>
+              <option>Enfermería</option>
+              <option>Otra</option>
+            </select>
+          </div>
+          <div class="mt-campo mt-solo-clinico" hidden>
+            <label for="c-lugar">Ciudad y lugar donde atiendes</label>
+            <input id="c-lugar" type="text" name="LUGAR" placeholder="Santiago · consulta particular">
+          </div>
+        </div>
+
         <input type="text" name="email_address_check" value="" class="mt-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
         <input type="hidden" name="locale" value="es">
-        <button class="mt-boton mt-boton--primario" type="submit">Quiero el aviso</button>
+
+        <div class="mt-formulario__acciones">
+          <button class="mt-boton mt-boton--primario" type="submit" id="boton-anticipado">Avísame cuando pueda probarla</button>
+        </div>
+        <p class="mt-formulario__legal" id="legal-anticipado">Usamos tu correo solo para avisarte del piloto de MindTune. Sin publicidad, pocos correos, y puedes pedir que lo borremos cuando quieras. Detalle en la <a href="{{ "/privacidad/" | relURL }}">política de privacidad</a>.</p>
+        <noscript>
+          <p class="mt-formulario__legal">Si tu navegador no ejecuta scripts, escríbenos a <a href="mailto:{{ $p.correo }}?subject=Acceso%20anticipado%20MindTune">{{ $p.correo }}</a> contándonos si tienes tinnitus o si eres profesional de salud.</p>
+        </noscript>
       </form>
-      <p class="mt-noticias__legal">Recibirás un correo para confirmar. Puedes darte de baja en cualquier momento. La lista la gestiona Brevo; el detalle está en la <a href="{{ "/privacidad/" | relURL }}">política de privacidad</a>.</p>
-      {{- else }}
-      <a class="mt-boton mt-boton--primario" href="mailto:{{ $p.correo }}?subject=Quiero%20recibir%20el%20aviso%20de%20MindTune">Quiero el aviso</a>
-      <p class="mt-noticias__legal">Se abre un correo a {{ $p.correo }}. Usaremos tu dirección solo para avisarte; puedes pedir que la borremos cuando quieras. Detalle en la <a href="{{ "/privacidad/" | relURL }}">política de privacidad</a>.</p>
-      {{- end }}
     </div>
   </div>
 </section>
