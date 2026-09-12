@@ -95,7 +95,7 @@ strong { font-weight: 500; color: var(--texto); }
 .mt-rama { transform-box: view-box; animation-name: mt-viento;
   animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1); animation-iteration-count: infinite;
   animation-direction: alternate; will-change: transform; }
-.mt-capa--lejos .mt-rama { animation: none; }
+/* La capa lejana también se mece, con menos amplitud y más lento (lo pone el generador). */
 @keyframes mt-viento { from { transform: rotate(calc(var(--giro) * -1)); } to { transform: rotate(var(--giro)); } }
 .mt-dosel__luz { position: absolute; inset: 0;
   background: radial-gradient(58% 46% at 66% 4%, rgba(180, 226, 214, 0.16), rgba(180, 226, 214, 0) 68%);
@@ -177,6 +177,8 @@ strong { font-weight: 500; color: var(--texto); }
 
 /* ---------- Secciones ---------- */
 .mt-seccion { padding-block: clamp(44px, 6vw, 84px); }
+/* Cuelga de la sección anterior en vez de abrir un bloque nuevo de peso completo. */
+.mt-seccion--ajustada { padding-block: 0; margin-top: clamp(-28px, -2.4vw, -8px); }
 .mt-seccion__intro { display: flex; flex-direction: column; gap: 14px; max-width: 780px; margin-bottom: 34px; }
 .mt-seccion__intro h2 { font-size: clamp(27px, 3.1vw, 40px); line-height: 1.18; }
 .mt-seccion__intro p { font-size: clamp(16px, 1.3vw, 18px); line-height: 1.6; color: var(--texto-sec); margin: 0; }
@@ -206,6 +208,12 @@ strong { font-weight: 500; color: var(--texto); }
   border: 1px solid var(--acento-borde); border-radius: 2px; }
 
 /* Perfilamiento: las cuatro dimensiones */
+/* Aviso de consulta médica: presente y legible, sin gritar. Un filo de acento, no una caja de color. */
+.mt-consulta { padding: 26px 30px; display: flex; flex-direction: column; gap: 10px;
+  border-left: 3px solid var(--acento-borde); }
+.mt-consulta p { margin: 0; font-size: 16px; line-height: 26px; color: var(--texto-sec); max-width: 84ch; }
+@media (max-width: 600px) { .mt-consulta { padding: 22px; } }
+
 .mt-rejilla-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 @media (max-width: 940px) { .mt-rejilla-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .mt-rejilla-4 { grid-template-columns: 1fr; } }

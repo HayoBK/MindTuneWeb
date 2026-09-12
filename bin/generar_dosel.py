@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 """Genera layouts/partials/dosel-capas.html — el dosel de hojas del fondo (v2, 2026-09-12).
 
-Tres capas de ramas con hojas, dibujadas como SVG estático. La capa lejana va borrosa y
-quieta (no repinta); las dos cercanas solo rotan unos grados alrededor de su nacimiento,
-con periodos primos entre sí para que el viento no se sienta cíclico.
+Tres capas de ramas con hojas, dibujadas como SVG estático. Cada rama se mece unos grados
+alrededor de su nacimiento, con periodos distintos entre sí para que el viento no se sienta
+cíclico. La capa lejana va borrosa y se mece menos y más lento, que es como se lee la
+profundidad: lo que está lejos se mueve poco.
 Determinista: misma semilla, mismo archivo. Volver a correr solo si se cambia la geometría.
 """
 import math, random, pathlib
@@ -54,7 +55,7 @@ def rama(rnd, ax, ay, direccion, largo, n_hojas, escala, borde="arriba"):
         hojas.append((bx + nx, by + ny, gh, eh))
     return d, hojas
 
-def capa(nombre, semilla, ramas_spec, escala, grosor):
+def capa(nombre, semilla, ramas_spec, escala, grosor, giro_rango, dur_rango):
     rnd = random.Random(semilla)
     piezas = []
     for (ax, ay, direccion, largo, n, borde) in ramas_spec:
@@ -62,8 +63,8 @@ def capa(nombre, semilla, ramas_spec, escala, grosor):
         usos = "".join(
             '<use href="#mt-hoja" transform="translate(%.0f %.0f) rotate(%.0f) scale(%.2f)"/>' % h
             for h in hojas)
-        giro = round(rnd.uniform(0.55, 1.45), 2)
-        dur = round(rnd.uniform(8.5, 15.5), 1)
+        giro = round(rnd.uniform(*giro_rango), 2)
+        dur = round(rnd.uniform(*dur_rango), 1)
         retardo = round(-rnd.uniform(0, 14), 1)
         piezas.append(
             '<g class="mt-rama" style="transform-origin:%.0fpx %.0fpx;--giro:%sdeg;'
@@ -86,10 +87,13 @@ cerca = [(-20, -70, 1, 520, 28, "arriba"), (330, -80, -1, 430, 25, "arriba"),
          (880, -75, 1, 470, 26, "arriba"), (1300, -70, -1, 440, 25, "arriba"),
          (1660, -80, 1, 500, 27, "arriba")]
 
+# El giro es la amplitud del vaivén (de -giro a +giro) y el periodo va largo a propósito:
+# la brisa tiene que notarse, pero lenta. Menos amplitud en la capa lejana que en la cercana,
+# que es como se ve la profundidad de verdad: lo que está lejos se mueve menos.
 capas = "\n  ".join([
-    capa("lejos", 20260912, lejos, 3.1, 1.4),
-    capa("medio", 7761, medio, 4.1, 2.0),
-    capa("cerca", 44917, cerca, 5.6, 2.8),
+    capa("lejos", 20260912, lejos, 3.1, 1.4, (1.1, 2.3), (16.0, 26.0)),
+    capa("medio", 7761, medio, 4.1, 2.0, (1.9, 3.6), (13.0, 22.0)),
+    capa("cerca", 44917, cerca, 5.6, 2.8, (2.4, 4.4), (12.0, 20.0)),
 ])
 
 svg = f'''{{{{- /* GENERADO por bin/generar_dosel.py — no editar a mano. Dosel de hojas del fondo (v2). */ -}}}}
