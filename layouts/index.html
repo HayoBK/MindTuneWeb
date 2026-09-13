@@ -168,8 +168,8 @@
             data-correo="{{ $p.correo }}"
             {{ with $p.brevo.action_paciente }}action="{{ . }}" target="_blank" rel="noopener"{{ end }}>
         <div class="mt-conmutador" role="radiogroup" aria-label="Cuéntanos quién eres">
-          <label><input type="radio" name="PERFIL" value="paciente" checked><span>Tengo tinnitus</span></label>
-          <label><input type="radio" name="PERFIL" value="clinico"><span>Soy profesional de salud</span></label>
+          <label><input type="radio" name="mt_perfil" value="paciente" checked><span>Tengo tinnitus</span></label>
+          <label><input type="radio" name="mt_perfil" value="clinico"><span>Soy profesional de salud</span></label>
         </div>
 
         <div class="mt-campos">
@@ -204,6 +204,7 @@
 
         <input type="text" name="email_address_check" value="" class="mt-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
         <input type="hidden" name="locale" value="es">
+        <input type="hidden" name="html_type" value="simple">
 
         <div class="mt-formulario__acciones">
           <button class="mt-boton mt-boton--primario" type="submit" id="boton-anticipado">Avísame cuando pueda probarla</button>

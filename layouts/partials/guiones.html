@@ -30,7 +30,7 @@
   // ---------- Acceso anticipado: un formulario, dos caminos ----------
   var form = document.getElementById('formulario-anticipado');
   if (!form) return;
-  var radios = form.querySelectorAll('input[name="PERFIL"]');
+  var radios = form.querySelectorAll('input[name="mt_perfil"]');
   var soloClinico = form.querySelectorAll('.mt-solo-clinico');
   var profesion = form.querySelector('#c-profesion');
   var boton = document.getElementById('boton-anticipado');
@@ -50,14 +50,19 @@
   };
 
   function perfilActual() {
-    var m = form.querySelector('input[name="PERFIL"]:checked');
+    var m = form.querySelector('input[name="mt_perfil"]:checked');
     return m ? m.value : 'paciente';
   }
 
   function pintar() {
     var perfil = perfilActual();
     var esClinico = perfil === 'clinico';
-    soloClinico.forEach(function (c) { c.hidden = !esClinico; });
+    soloClinico.forEach(function (c) {
+      c.hidden = !esClinico;
+      // deshabilitados = no viajan en el envío, así el camino paciente no manda
+      // atributos que su lista de Brevo no tiene
+      c.querySelectorAll('input, select').forEach(function (campo) { campo.disabled = !esClinico; });
+    });
     if (profesion) { profesion.required = esClinico; }
     boton.textContent = TEXTOS[perfil].boton;
     // se conserva el enlace a la política que viene en el HTML
@@ -79,7 +84,7 @@
   // Los botones con data-perfil eligen el camino antes de bajar a la sección
   document.querySelectorAll('[data-perfil]').forEach(function (b) {
     b.addEventListener('click', function () {
-      var destino = form.querySelector('input[name="PERFIL"][value="' + b.dataset.perfil + '"]');
+      var destino = form.querySelector('input[name="mt_perfil"][value="' + b.dataset.perfil + '"]');
       if (destino) { destino.checked = true; pintar(); }
     });
   });

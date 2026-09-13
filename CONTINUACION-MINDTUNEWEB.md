@@ -92,3 +92,52 @@ Revisado en 1440×1000 y 390×844.
 - Crear las **dos** listas en Brevo y pegar los dos `action`.
 - `data/centros.yaml` quedó sin uso: dejarlo por si vuelve la sección, o borrarlo.
 - Sigue pendiente de antes: razón social (D-W5), `assets/images/og.png`, revisión del abogado.
+
+## 2026-09-12 (tarde) — Brevo: guía y ajuste del formulario
+
+`GUIA-CORREO-Y-LISTAS-MINDTUNE.md` (nueva, en la raíz del repo): los pasos para dejar las dos
+listas funcionando — cuenta, autenticación del dominio en Cloudflare (TXT del código Brevo + DKIM +
+DMARC; **los MX no se tocan**, ahí vive el Email Routing), los cuatro atributos `NOMBRE` / `PERFIL` /
+`PROFESION` / `LUGAR`, las dos listas, los dos formularios (**Marketing → Forms → Sign-up →
+Full page/embedded**), sacar el `action` desde **Share → Embed code → Simple HTML**, pegarlo en
+`hugo.yaml` y probar los dos caminos.
+
+Ajuste de código: en `partials/guiones.html`, los campos del camino clínico ahora se **deshabilitan**
+cuando están ocultos, para que el camino paciente no mande a Brevo atributos que su lista no tiene.
+
+**Falta:** que Hayo pase los dos bloques `<form …>` de la Simple HTML de Brevo, para calzar los
+campos ocultos exactos que espera el endpoint antes de dar por cerrado el tema.
+
+**Corrección 2026-09-13.** La guía pasó a llamarse `GUIA-CORREO-Y-LISTAS-MINDTUNE.md` y cubre dos partes:
+**A** Cloudflare Email Routing (`contacto@mindtune.cl` → `hayo.bk@gmail.com`: verificar el destino y crear
+la regla; catch-all recomendado) y **B** Brevo **en modo solo-registro**: confirmación en *No confirmation*
+y sin notificación al equipo, de modo que no sale ningún correo ni al inscrito ni a Hayo. Con eso la
+autenticación del dominio en Brevo **queda postergada** hasta que efectivamente se escriba a la lista
+(los pasos quedaron anotados al final de la guía). Decisión de Hayo: por ahora el formulario junta correos
+y nada más; el `mailto` de respaldo desaparece solo al pegar los dos `action`.
+
+## 2026-09-13 — Brevo conectado: las dos listas funcionando
+
+**Cuenta nueva de Brevo solo para MindTune** (`contacto@mindtune.cl`), separada de la que maneja
+LabONCE y Neurociencia. Atributos `NOMBRE` / `PERFIL` / `PROFESION` / `LUGAR`; listas #3
+*Acceso anticipado - pacientes* y #4 *… - profesionales de salud*; dos formularios de suscripción,
+cada uno a su lista, ambos con **Sin e-mail de confirmación** y sin notificación al equipo: el
+sistema **no envía ni un correo**, solo acumula contactos.
+
+**Cambios en el sitio.** Los dos `action` de Brevo quedaron en `hugo.yaml`. En el formulario se
+agregó el oculto `html_type=simple` que el endpoint de Brevo espera, y el radio del conmutador
+pasó de `PERFIL` a **`mt_perfil`** (con su JS) para no mandarle a Brevo un atributo que sus
+formularios no declaran; el perfil ya queda dicho por la lista en la que cae la persona.
+Los campos del camino clínico siguen deshabilitados cuando están ocultos, así el camino paciente
+manda exactamente los campos del formulario A.
+
+**Probado de punta a punta** contra el endpoint real: `hayo.bk+prueba.paciente@` cayó en la #3 y
+`hayo.bk+prueba.clinico@` en la #4 con PROFESION y LUGAR. Los dos contactos de prueba quedaron
+en Brevo para que Hayo los vea; se pueden borrar.
+
+**Cloudflare.** No hizo falta tocar nada: la CSP ya permitía `*.sibforms.com` y no hay envío de
+correo, así que la autenticación de dominio en la cuenta nueva queda para más adelante. Sí quedó
+anotado el pendiente de **sacar `mindtune.cl` de la cuenta vieja de Brevo** cuando se autentique
+en la nueva. (Email Routing de `contacto@mindtune.cl` → Gmail quedó andando el mismo día.)
+
+**Pendiente:** publicar el sitio con los dos `action` (bloque entregado a Claude Code).
