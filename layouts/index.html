@@ -163,10 +163,7 @@
       </div>
 
       <form class="mt-formulario" id="formulario-anticipado" method="post"
-            data-accion-paciente="{{ $p.brevo.action_paciente }}"
-            data-accion-clinico="{{ $p.brevo.action_clinico }}"
-            data-correo="{{ $p.correo }}"
-            {{ with $p.brevo.action_paciente }}action="{{ . }}" target="_blank" rel="noopener"{{ end }}>
+            action="{{ "/api/inscribir" | relURL }}" data-correo="{{ $p.correo }}">
         <div class="mt-conmutador" role="radiogroup" aria-label="Cuéntanos quién eres">
           <label><input type="radio" name="mt_perfil" value="paciente" checked><span>Tengo tinnitus</span></label>
           <label><input type="radio" name="mt_perfil" value="clinico"><span>Soy profesional de salud</span></label>
@@ -175,7 +172,7 @@
         <div class="mt-campos">
           <div class="mt-campo">
             <label for="c-correo">Tu correo</label>
-            <input id="c-correo" type="email" name="{{ $p.brevo.campo_email }}" placeholder="tu@correo.cl" autocomplete="email" required>
+            <input id="c-correo" type="email" name="EMAIL" placeholder="tu@correo.cl" autocomplete="email" required>
           </div>
           <div class="mt-campo">
             <label for="c-nombre">Tu nombre <span style="color: var(--apagado);">(opcional)</span></label>
@@ -203,18 +200,41 @@
         </div>
 
         <input type="text" name="email_address_check" value="" class="mt-honeypot" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <input type="hidden" name="locale" value="es">
-        <input type="hidden" name="html_type" value="simple">
 
         <div class="mt-formulario__acciones">
           <button class="mt-boton mt-boton--primario" type="submit" id="boton-anticipado">Avísame cuando pueda probarla</button>
         </div>
         <p class="mt-formulario__legal" id="legal-anticipado">Usamos tu correo solo para avisarte del piloto de MindTune. Sin publicidad, pocos correos, y puedes pedir que lo borremos cuando quieras. Detalle en la <a href="{{ "/privacidad/" | relURL }}">política de privacidad</a>.</p>
         <noscript>
-          <p class="mt-formulario__legal">Si tu navegador no ejecuta scripts, escríbenos a <a href="mailto:{{ $p.correo }}?subject=Acceso%20anticipado%20MindTune">{{ $p.correo }}</a> contándonos si tienes tinnitus o si eres profesional de salud.</p>
+          <p class="mt-formulario__legal">Si tu navegador no ejecuta scripts, el formulario funciona igual: al enviarlo verás una página de confirmación.</p>
         </noscript>
       </form>
+
+      <div class="mt-hecho" id="anticipado-hecho" hidden>
+        <div class="mt-hecho__marca" aria-hidden="true">{{ partial "marca.html" . }}</div>
+        <div>
+          <h3>Quedaste anotado.</h3>
+          <p id="anticipado-hecho-texto">Te escribimos apenas haya cupo en el piloto.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
+
+{{- /* Aviso de envío. Vive al final del main, fuera de todo .mt-vidrio: un elemento con
+       backdrop-filter se vuelve el bloque contenedor de sus hijos fixed y dejaría el
+       pop-up encerrado dentro de la tarjeta. */ -}}
+<div class="mt-aviso" id="mt-aviso" hidden>
+  <div class="mt-aviso__fondo" data-cerrar-aviso></div>
+  <div class="mt-aviso__caja" role="dialog" aria-modal="true" aria-labelledby="mt-aviso-titulo"
+       aria-describedby="mt-aviso-texto" tabindex="-1">
+    <div class="mt-aviso__marca" aria-hidden="true">{{ partial "marca.html" . }}</div>
+    <h2 id="mt-aviso-titulo">Listo.</h2>
+    <p id="mt-aviso-texto"></p>
+    <div class="mt-aviso__acciones">
+      <button class="mt-boton mt-boton--primario" type="button" data-cerrar-aviso>Seguir explorando</button>
+      <a class="mt-boton mt-boton--secundario" id="mt-aviso-alternativa" href="mailto:{{ $p.correo }}" hidden>Escribirnos por correo</a>
+    </div>
+  </div>
+</div>
 {{ end }}

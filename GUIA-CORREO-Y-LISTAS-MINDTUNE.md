@@ -9,7 +9,8 @@ Dos cosas distintas que se suelen confundir:
   solo correo** —ni a ti ni a quien se inscribe— hasta que tú decidas. **Ya está hecho**; la
   Parte B de abajo es la documentación de cómo quedó.
 
-Ambas quedaron funcionando el 2026-09-13.
+Ambas quedaron funcionando el 2026-09-13. El 2026-09-20 se agregó la **Parte C**: el aviso
+por cada inscripción y la pantalla de éxito del sitio.
 
 ---
 
@@ -139,3 +140,73 @@ verlos.
   `content/privacidad.md`, que hoy declara exactamente estos campos.
 - La contraseña de esta cuenta conviene que sea larga: custodia una base de contactos de
   pacientes.
+
+
+---
+
+# Parte C — El aviso por inscripción y el pop-up (2026-09-20)
+
+## Qué cambió
+
+El formulario ya **no postea a Brevo directamente**. Postea a `/api/inscribir`, un endpoint del
+propio Worker de mindtune.cl (`src/worker.js`), que hace tres cosas en orden:
+
+1. **Inscribe** el contacto en la lista de Brevo que corresponde a su perfil (API de Brevo).
+2. **Cuenta** cuántos hay en cada una de las dos listas.
+3. **Te manda el aviso** a `hayo.bk@gmail.com`.
+
+La regla del Worker: el paso 1 manda. Si fallan el conteo o el aviso, la persona igual quedó
+inscrita y ve la pantalla de éxito. Un aviso perdido es molesto; un contacto perdido no se
+recupera nunca.
+
+**El aviso se ve así.** Asunto: `MindTune · Paciente — Juan Soto <juan@correo.cl>` (o
+`· Profesional —` para los clínicos; si no dejó nombre, va solo el correo). El cuerpo trae tipo,
+nombre, correo, profesión y lugar cuando es clínico, la fecha en hora de Santiago, y un recuadro
+con **cuántos hay en cada lista y el total**. El *responder* del correo apunta a la persona que se
+inscribió, así que puedes contestarle directo desde Gmail.
+
+**El pop-up.** Al enviar, el formulario se reemplaza por un "Quedaste anotado" y aparece un
+recuadro en la estética de la app, con la marca y un botón *Seguir explorando* que lo cierra y
+deja a la persona donde estaba. Se cierra también con Escape o tocando fuera. Si algo falla, el
+mismo recuadro lo dice con claridad y ofrece escribir a `contacto@mindtune.cl`; el formulario
+queda intacto para reintentar. Sin JavaScript el formulario se envía igual y el Worker responde
+con una página de confirmación sobria.
+
+## Lo que hay que tener puesto para que funcione
+
+| Qué | Dónde | Estado |
+|---|---|---|
+| Remitente `MindTune <contacto@mindtune.cl>` | Brevo → Remitentes | ✅ verificado |
+| Ids de las listas (3 y 4) | `wrangler.jsonc` → `vars` | ✅ |
+| Correo de destino del aviso | `wrangler.jsonc` → `AVISO_A` | ✅ |
+| **Clave API de Brevo** | secreto del Worker | ⚠️ **la creas tú, una vez** |
+
+### La clave API, paso a paso
+
+1. En Brevo: **SMTP y API → Claves API y MCP → Generar una nueva clave API**. Nómbrala
+   `mindtune.cl` y **cópiala ahora**: Brevo no la vuelve a mostrar.
+2. En el Mac, dentro del repo:
+
+   ```bash
+   cd ~/Git_Web/MindTuneWeb
+   npx wrangler secret put BREVO_API_KEY
+   ```
+
+   Pega la clave cuando la pida y aprieta Enter. Queda guardada en Cloudflare, cifrada, fuera
+   del repo y fuera de cualquier historial.
+3. Vuelve a desplegar (`npx wrangler deploy`) y listo.
+
+**No pegues esa clave en un chat, ni en `wrangler.jsonc`, ni en un archivo del repo.** Da acceso
+completo a la base de contactos. Si alguna vez se filtra, se revoca desde la misma pantalla de
+Brevo y se genera otra.
+
+## Si el aviso no llega
+
+- **Revisa spam la primera vez.** El dominio todavía no está autenticado en esta cuenta de Brevo,
+  así que el correo sale sin firma DKIM propia. Márcalo como "no es spam" y márcale a Gmail que
+  nunca lo mande ahí. Cuando hagas la autenticación del dominio (Parte B, más abajo), esto se
+  arregla solo.
+- **Mira los registros del Worker:** Cloudflare → Compute → Workers → `mindtuneweb` → Logs. El
+  Worker deja escrito ahí cuando Brevo rechaza algo, con el código de error.
+- **Revisa que la inscripción sí llegó**: si el contacto está en la lista, el problema es solo el
+  aviso, y no perdiste a nadie.

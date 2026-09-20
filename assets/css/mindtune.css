@@ -250,6 +250,7 @@ strong { font-weight: 500; color: var(--texto); }
 .mt-perfil-tarjeta p { margin: 0; font-size: 15px; line-height: 23px; color: var(--texto-sec); }
 
 .mt-formulario { display: flex; flex-direction: column; gap: 18px; }
+.mt-formulario[hidden] { display: none; }
 .mt-conmutador { display: flex; gap: 8px; padding: 6px; border: 1px solid var(--borde); border-radius: 14px;
   background: rgba(7, 12, 18, 0.5); align-self: flex-start; flex-wrap: wrap; }
 .mt-conmutador label { display: inline-flex; cursor: pointer; }
@@ -279,6 +280,45 @@ strong { font-weight: 500; color: var(--texto); }
 .mt-formulario__acciones { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
 .mt-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .mt-aviso-envio { margin: 0; font-size: 15px; line-height: 22px; color: var(--acento); }
+
+/* ---------- Estado "ya quedaste anotado" (reemplaza al formulario) ---------- */
+.mt-hecho { display: flex; align-items: center; gap: 20px; padding: 26px 28px;
+  border: 1px solid var(--acento-borde); background: var(--acento-tenue); border-radius: var(--r-tarjeta); }
+.mt-hecho[hidden] { display: none; }
+.mt-hecho__marca { width: 40px; flex: none; color: var(--acento); }
+.mt-hecho__marca svg { width: 100%; height: auto; }
+.mt-hecho h3 { font-size: 20px; line-height: 27px; margin-bottom: 6px; }
+.mt-hecho p { margin: 0; font-size: 16px; line-height: 24px; color: var(--texto-sec); }
+@media (max-width: 600px) { .mt-hecho { flex-direction: column; align-items: flex-start; gap: 14px; padding: 22px; } }
+
+/* ---------- Aviso de envío (pop-up) ----------
+   Va al final del main, fuera de todo .mt-vidrio: backdrop-filter convierte al elemento
+   en bloque contenedor de sus hijos fixed y encerraría el pop-up dentro de la tarjeta. */
+.mt-aviso { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: var(--margen); }
+.mt-aviso[hidden] { display: none; }
+.mt-aviso__fondo { position: absolute; inset: 0; background: rgba(5, 9, 13, 0.72);
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); opacity: 0;
+  transition: opacity 200ms ease; }
+.mt-aviso.es-visible .mt-aviso__fondo { opacity: 1; }
+.mt-aviso__caja { position: relative; width: min(460px, 100%); display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 14px; padding: clamp(28px, 5vw, 40px);
+  background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--r-tarjeta);
+  opacity: 0; transform: translateY(10px) scale(0.99);
+  transition: opacity 200ms ease, transform 200ms ease; }
+.mt-aviso.es-visible .mt-aviso__caja { opacity: 1; transform: none; }
+.mt-aviso__caja:focus { outline: none; }
+.mt-aviso__caja:focus-visible { outline: 2px solid var(--acento); outline-offset: 3px; }
+.mt-aviso__marca { width: 54px; color: var(--acento); margin-bottom: 2px; }
+.mt-aviso__marca svg { width: 100%; height: auto; }
+.mt-aviso h2 { font-size: clamp(24px, 3vw, 29px); line-height: 1.2; }
+.mt-aviso p { margin: 0; font-size: 16px; line-height: 25px; color: var(--texto-sec); max-width: 40ch; }
+.mt-aviso__acciones { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; width: 100%; }
+.mt-aviso__acciones .mt-boton { flex: 1 1 auto; min-width: 180px; }
+.mt-aviso__acciones .mt-boton[hidden] { display: none; }
+body.es-quieto { overflow: hidden; }
+@media (prefers-reduced-motion: reduce) {
+  .mt-aviso__fondo, .mt-aviso__caja { transition: none; opacity: 1; transform: none; }
+}
 
 /* ---------- Página interior ---------- */
 .mt-interior { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 36px; align-items: start; padding-block: 40px 80px; }

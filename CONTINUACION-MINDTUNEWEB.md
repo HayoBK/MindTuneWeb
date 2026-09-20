@@ -141,3 +141,40 @@ anotado el pendiente de **sacar `mindtune.cl` de la cuenta vieja de Brevo** cuan
 en la nueva. (Email Routing de `contacto@mindtune.cl` → Gmail quedó andando el mismo día.)
 
 **Pendiente:** publicar el sitio con los dos `action` (bloque entregado a Claude Code).
+
+## 2026-09-20 — Pop-up de éxito y aviso por inscripción (Worker propio)
+
+Dos pedidos de Hayo: que la pantalla de "success" de Brevo (blanca y pobre) desapareciera, y
+recibir un correo por cada inscripción con nombre/correo/tipo en el asunto y el conteo de las
+listas en el cuerpo. Brevo no tiene ninguna variable de tamaño de lista, así que el conteo obligaba
+a consultar su API: se resolvió metiendo un endpoint propio en medio.
+
+**`src/worker.js` (nuevo).** El sitio pasa de ser solo assets a un Worker con assets
+(`main` + `assets.binding: ASSETS` en `wrangler.jsonc`). Expone `POST /api/inscribir`, que
+inscribe en la lista según `mt_perfil`, consulta `totalSubscribers` de las dos listas y manda el
+aviso por `/v3/smtp/email`. Orden de prioridades explícito: si fallan el conteo o el aviso, la
+respuesta sigue siendo exitosa — solo el alta del contacto puede hacer fallar la petición.
+Trampa de bots (`email_address_check`), límite de cuerpo, saneado de campos y `replyTo` apuntando
+al inscrito. Config en `vars`; la clave va como secreto (`npx wrangler secret put BREVO_API_KEY`).
+
+**Front.** El formulario postea a `/api/inscribir` por `fetch`; al volver bien se oculta y en su
+lugar aparece un bloque "Quedaste anotado", más un pop-up `.mt-aviso` (marca, título, texto y
+botón *Seguir explorando*) que cierra con botón, Escape o clic fuera y deja a la persona donde
+estaba. Estado de error propio, con salida a `contacto@mindtune.cl`, sin perder lo escrito.
+Sin JS el POST normal devuelve una página de confirmación sobria desde el Worker.
+
+**Dos detalles que costaron y conviene no volver a pisar:** el pop-up vive al final del `main`,
+**fuera de todo `.mt-vidrio`**, porque `backdrop-filter` convierte al elemento en bloque contenedor
+de sus hijos `fixed` y lo encerraba dentro de la tarjeta; y `.mt-formulario` necesitó
+`[hidden]{display:none}` porque su `display:flex` le ganaba al atributo `hidden`.
+
+**Limpieza.** Fuera el bloque `brevo` de `hugo.yaml` y `*.sibforms.com` de `form-action` en la CSP:
+ya no se postea a Brevo desde el navegador. Los dos formularios de Brevo quedan sin uso (se pueden
+dejar como respaldo). Sección 11 de privacidad menciona ahora el aviso interno.
+
+**Verificado** con un endpoint simulado en 1440×1000 y 390×844: éxito, error y cierre, sin errores
+de consola. Remitente `MindTune <contacto@mindtune.cl>` ya estaba verificado en Brevo.
+
+**Pendiente de Hayo:** crear la clave API en Brevo y cargarla con `wrangler secret put`; recién
+ahí el endpoint funciona. Sigue pendiente la autenticación del dominio en la cuenta nueva (mejora
+la entregabilidad del aviso y hace falta el día que se escriba a la lista).

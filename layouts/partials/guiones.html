@@ -35,17 +35,20 @@
   var profesion = form.querySelector('#c-profesion');
   var boton = document.getElementById('boton-anticipado');
   var legal = document.getElementById('legal-anticipado');
+  var hecho = document.getElementById('anticipado-hecho');
+  var hechoTexto = document.getElementById('anticipado-hecho-texto');
   var correo = form.dataset.correo || '';
-  var acciones = { paciente: form.dataset.accionPaciente || '', clinico: form.dataset.accionClinico || '' };
 
   var TEXTOS = {
     paciente: {
       boton: 'Avísame cuando pueda probarla',
-      legal: 'Usamos tu correo solo para avisarte del piloto de MindTune. Sin publicidad, pocos correos, y puedes pedir que lo borremos cuando quieras.'
+      legal: 'Usamos tu correo solo para avisarte del piloto de MindTune. Sin publicidad, pocos correos, y puedes pedir que lo borremos cuando quieras.',
+      aviso: 'Te escribimos apenas haya cupo en el piloto. No te vamos a llenar la bandeja: solo cuando haya algo que probar.'
     },
     clinico: {
       boton: 'Quiero conocer el lado clínico',
-      legal: 'Usamos tus datos solo para contactarte por el piloto de MindTune y coordinar el acceso clínico. Sin publicidad, y puedes pedir que los borremos cuando quieras.'
+      legal: 'Usamos tus datos solo para contactarte por el piloto de MindTune y coordinar el acceso clínico. Sin publicidad, y puedes pedir que los borremos cuando quieras.',
+      aviso: 'Te escribimos cuando abramos el acceso clínico del piloto, para mostrarte cómo se ve el perfil de un paciente y cómo se acompaña desde ahí.'
     }
   };
 
@@ -59,23 +62,13 @@
     var esClinico = perfil === 'clinico';
     soloClinico.forEach(function (c) {
       c.hidden = !esClinico;
-      // deshabilitados = no viajan en el envío, así el camino paciente no manda
-      // atributos que su lista de Brevo no tiene
       c.querySelectorAll('input, select').forEach(function (campo) { campo.disabled = !esClinico; });
     });
     if (profesion) { profesion.required = esClinico; }
     boton.textContent = TEXTOS[perfil].boton;
-    // se conserva el enlace a la política que viene en el HTML
     var enlace = legal.querySelector('a');
     legal.textContent = TEXTOS[perfil].legal + ' Detalle en la ';
     if (enlace) { legal.appendChild(enlace); legal.appendChild(document.createTextNode('.')); }
-    if (acciones[perfil]) {
-      form.setAttribute('action', acciones[perfil]);
-      form.setAttribute('target', '_blank');
-      form.setAttribute('rel', 'noopener');
-    } else {
-      form.removeAttribute('action');
-    }
   }
 
   radios.forEach(function (r) { r.addEventListener('change', pintar); });
@@ -89,28 +82,87 @@
     });
   });
 
-  // Sin lista configurada, el envío arma un correo con lo que se escribió
-  form.addEventListener('submit', function (ev) {
-    var perfil = perfilActual();
-    if (acciones[perfil]) { return; }              // hay lista: que el formulario se envíe normal
-    ev.preventDefault();
-    if (form.querySelector('[name="email_address_check"]').value) { return; }
-    var d = new FormData(form);
-    var lineas = [
-      perfil === 'clinico' ? 'Soy profesional de salud.' : 'Tengo tinnitus.',
-      'Correo: ' + (d.get(form.querySelector('input[type=email]').name) || ''),
-      'Nombre: ' + (d.get('NOMBRE') || '—')
-    ];
-    if (perfil === 'clinico') {
-      lineas.push('Profesión: ' + (d.get('PROFESION') || '—'));
-      lineas.push('Dónde atiende: ' + (d.get('LUGAR') || '—'));
+  // ---------- El pop-up de aviso ----------
+  var aviso = document.getElementById('mt-aviso');
+  var avisoCaja = aviso && aviso.querySelector('.mt-aviso__caja');
+  var avisoTitulo = document.getElementById('mt-aviso-titulo');
+  var avisoTexto = document.getElementById('mt-aviso-texto');
+  var avisoAlternativa = document.getElementById('mt-aviso-alternativa');
+  var devolverFoco = null;
+
+  function abrirAviso(titulo, texto, mailto) {
+    if (!aviso) { return; }
+    devolverFoco = document.activeElement;
+    avisoTitulo.textContent = titulo;
+    avisoTexto.textContent = texto;
+    if (mailto) {
+      avisoAlternativa.href = mailto;
+      avisoAlternativa.hidden = false;
+    } else {
+      avisoAlternativa.hidden = true;
     }
-    var asunto = perfil === 'clinico'
-      ? 'Acceso anticipado MindTune — profesional de salud'
-      : 'Acceso anticipado MindTune — quiero probarla';
-    window.location.href = 'mailto:' + correo +
-      '?subject=' + encodeURIComponent(asunto) +
-      '&body=' + encodeURIComponent(lineas.join('\n') + '\n');
+    aviso.hidden = false;
+    document.body.classList.add('es-quieto');
+    requestAnimationFrame(function () {
+      aviso.classList.add('es-visible');
+      avisoCaja.focus();
+    });
+  }
+
+  function cerrarAviso() {
+    if (!aviso || aviso.hidden) { return; }
+    aviso.classList.remove('es-visible');
+    document.body.classList.remove('es-quieto');
+    var esconder = function () { aviso.hidden = true; };
+    if (reducido) { esconder(); } else { setTimeout(esconder, 200); }
+    if (devolverFoco && devolverFoco.focus) { devolverFoco.focus(); }
+  }
+
+  document.querySelectorAll('[data-cerrar-aviso]').forEach(function (b) {
+    b.addEventListener('click', cerrarAviso);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { cerrarAviso(); }
+  });
+
+  // ---------- Envío ----------
+  form.addEventListener('submit', function (ev) {
+    if (!window.fetch) { return; }           // sin fetch, que lo mande el navegador
+    ev.preventDefault();
+    if (form.dataset.enviando === '1') { return; }
+    if (!form.reportValidity()) { return; }
+
+    var perfil = perfilActual();
+    var textoBoton = boton.textContent;
+    form.dataset.enviando = '1';
+    boton.disabled = true;
+    boton.textContent = 'Enviando…';
+
+    fetch(form.action, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+      body: new URLSearchParams(new FormData(form))
+    }).then(function (r) {
+      return r.json().catch(function () { return { ok: r.ok }; });
+    }).then(function (d) {
+      if (!d || !d.ok) { throw new Error((d && d.error) || 'respuesta'); }
+      form.hidden = true;
+      if (hecho) {
+        hechoTexto.textContent = TEXTOS[perfil].aviso;
+        hecho.hidden = false;
+      }
+      abrirAviso('Quedaste anotado.', TEXTOS[perfil].aviso, null);
+    }).catch(function () {
+      abrirAviso(
+        'No pudimos registrarte.',
+        'Algo falló de nuestro lado y tu correo no quedó guardado. Inténtalo de nuevo en un rato, o escríbenos y te anotamos a mano.',
+        'mailto:' + correo + '?subject=' + encodeURIComponent('Acceso anticipado MindTune')
+      );
+    }).then(function () {
+      form.dataset.enviando = '';
+      boton.disabled = false;
+      boton.textContent = textoBoton;
+    });
   });
 })();
 </script>

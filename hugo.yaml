@@ -24,14 +24,9 @@ params:
   paper:
     cita: "Henríquez P, et al. Brain Sci. 2026;16:644."
     url: "https://doi.org/10.3390/brainsci16060644"
-  # Formulario de acceso anticipado (Brevo, D-W3). Dos listas: pacientes y profesionales de salud.
-  # Pegar la URL "action" de cada formulario de Brevo (Contactos → Formularios → Compartir → HTML).
-  # Ambas vacías = el envío arma un correo a params.correo con lo que la persona escribió.
-  brevo:
-    action_paciente: "https://c04b295a.sibforms.com/serve/MUIFAP-636T-Z8xyMtsXegWnXmpRgh68PXBQ_K0ZIGRM2NTaXLOeO6pWkXJSs9Dv5ScHTm1Li2pds_lWdC_AGMHtf2cby6gZeHI6Hhcn1KSdxcvoG1SkOi2bswqwAJF7NeKbyiGkJJD_0MX8bUXs8-6T9mkmxFkJkLCdXvC9xq41wy5EbQ5JqEHh0DsEbXKvo2tLOb_x_cCQobnlog=="
-    action_clinico: "https://c04b295a.sibforms.com/serve/MUIFAGLVywP2wzqwbvXX6p3gb4rkbqEFdjXXTujS4Ncwa46cdHoQA5Uh9V9zGObVUd3Qg9VBtwmnktj0yGE3eU1ymCLbvrj4aNOj-_kXfW8ajWVNteNQEbKjwmlzMu1IV99Uh3VV317KzmidQlV1Pf0bq3f4Cv8z8eRwRZ15W_RPzfUvAOCtcNO0zuCwBqbnyatjrqgzy1viTR4HCg=="
-    # Nombre del campo de correo que espera Brevo (por defecto EMAIL)
-    campo_email: "EMAIL"
+  # El formulario de acceso anticipado ya no postea a Brevo: pasa por /api/inscribir,
+  # el Worker de src/worker.js, que inscribe en la lista que corresponde, cuenta cuántos
+  # hay en cada una y manda el aviso. Su configuración vive en wrangler.jsonc.
 
 menu:
   main:

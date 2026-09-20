@@ -1,13 +1,32 @@
-// Configuración del Worker de Cloudflare que sirve el sitio como archivos estáticos.
-// Publicación desde el Mac (Claude Code): HUGO_ENVIRONMENT=production hugo --gc --minify && npx wrangler deploy
+// Configuración del Worker de Cloudflare que sirve el sitio y atiende /api/inscribir.
+// Publicación desde el Mac (Claude Code):
+//   HUGO_ENVIRONMENT=production hugo --gc --minify && npx wrangler deploy
 // wrangler lee este archivo, sube la carpeta public/ y registra los dos dominios.
+//
+// El secreto BREVO_API_KEY NO va aquí. Se carga una sola vez con:
+//   npx wrangler secret put BREVO_API_KEY
+// y se pega la clave cuando la pide (no queda en el repo ni en el historial).
 {
   "name": "mindtuneweb",
   "compatibility_date": "2026-09-01",
+  "main": "src/worker.js",
   "assets": {
     "directory": "./public",
+    "binding": "ASSETS",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
+  },
+  "observability": { "enabled": true },
+  "vars": {
+    // A quién llega el aviso de cada inscripción
+    "AVISO_A": "hayo.bk@gmail.com",
+    "AVISO_NOMBRE": "Hayo Breinbauer",
+    // Con qué cara sale ese aviso. El remitente tiene que estar validado en Brevo.
+    "REMITENTE_EMAIL": "contacto@mindtune.cl",
+    "REMITENTE_NOMBRE": "MindTune",
+    // Ids de las listas de Brevo (CRM → Listas, columna ID)
+    "LISTA_PACIENTES": "3",
+    "LISTA_CLINICOS": "4"
   },
   "routes": [
     { "pattern": "mindtune.cl", "custom_domain": true },
