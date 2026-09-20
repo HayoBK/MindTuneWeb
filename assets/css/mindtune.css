@@ -176,7 +176,7 @@ strong { font-weight: 500; color: var(--texto); }
 @media (max-width: 600px) { .mt-portada__acciones { flex-direction: column; width: 100%; } .mt-portada__acciones .mt-boton { width: 100%; } }
 
 /* ---------- Secciones ---------- */
-.mt-seccion { padding-block: clamp(44px, 6vw, 84px); }
+.mt-seccion { padding-block: clamp(44px, 6vw, 84px); scroll-margin-top: 88px; }
 /* Cuelga de la sección anterior en vez de abrir un bloque nuevo de peso completo. */
 .mt-seccion--ajustada { padding-block: 0; margin-top: clamp(-28px, -2.4vw, -8px); }
 .mt-seccion__intro { display: flex; flex-direction: column; gap: 14px; max-width: 780px; margin-bottom: 34px; }
@@ -244,10 +244,27 @@ strong { font-weight: 500; color: var(--texto); }
 .mt-anticipado { padding: clamp(28px, 4vw, 48px); display: flex; flex-direction: column; gap: 26px; }
 .mt-anticipado__perfiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 @media (max-width: 780px) { .mt-anticipado__perfiles { grid-template-columns: 1fr; } }
+/* Las dos tarjetas son atajos: llevan al formulario y dejan marcado el camino.
+   En el teléfono son lo que hace visible que más abajo hay algo que completar. */
 .mt-perfil-tarjeta { padding: 22px; border: 1px solid var(--borde); border-radius: var(--r-tarjeta);
-  background: rgba(22, 32, 44, 0.5); display: flex; flex-direction: column; gap: 10px; }
+  background: rgba(22, 32, 44, 0.5); display: flex; flex-direction: column; gap: 10px;
+  color: var(--texto); text-decoration: none;
+  transition: border-color 140ms ease, background-color 140ms ease; }
+.mt-perfil-tarjeta:hover, .mt-perfil-tarjeta:focus-visible {
+  color: var(--texto); border-color: var(--acento-borde); background: rgba(22, 32, 44, 0.78); }
 .mt-perfil-tarjeta h3 { font-size: 18px; line-height: 25px; }
 .mt-perfil-tarjeta p { margin: 0; font-size: 15px; line-height: 23px; color: var(--texto-sec); }
+.mt-perfil-tarjeta__ir { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 6px;
+  font-size: 15px; line-height: 22px; font-weight: 500; color: var(--acento); }
+.mt-perfil-tarjeta__ir svg { width: 16px; height: 16px; flex: none;
+  transition: transform 140ms ease; }
+.mt-perfil-tarjeta:hover .mt-perfil-tarjeta__ir svg { transform: translateX(3px); }
+@media (prefers-reduced-motion: reduce) {
+  .mt-perfil-tarjeta, .mt-perfil-tarjeta__ir svg { transition: none; }
+}
+
+/* El formulario es destino de anclaje: que la cabecera pegajosa no lo tape */
+#formulario-anticipado, #anticipado-hecho { scroll-margin-top: 96px; }
 
 .mt-formulario { display: flex; flex-direction: column; gap: 18px; }
 .mt-formulario[hidden] { display: none; }
@@ -262,6 +279,11 @@ strong { font-weight: 500; color: var(--texto); }
 .mt-conmutador input:checked + span { color: var(--sobre-acento); background: var(--acento); }
 .mt-conmutador input:focus-visible + span { outline: 2px solid var(--acento); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .mt-conmutador label span { transition: none; } }
+@media (max-width: 600px) {
+  .mt-conmutador { align-self: stretch; }
+  .mt-conmutador label { flex: 1 1 0; min-width: 0; }
+  .mt-conmutador label span { width: 100%; padding: 0 10px; text-align: center; }
+}
 
 .mt-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 @media (max-width: 640px) { .mt-campos { grid-template-columns: 1fr; } }
@@ -370,6 +392,10 @@ body.es-quieto { overflow: hidden; }
 .mt-pie__aviso { font-size: 15px; line-height: 23px; color: var(--apagado); max-width: 900px; margin: 0; }
 
 /* ---------- Aparecer al entrar en pantalla ---------- */
+@media (max-width: 620px) {
+  .mt-portada h1, .mt-seccion__intro h2, .mt-anticipado h2 { text-wrap: pretty; }
+}
+
 .mt-aparece { opacity: 0; transform: translateY(14px); transition: opacity 700ms ease, transform 700ms ease; }
 .mt-aparece.es-visible { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { .mt-aparece { opacity: 1; transform: none; transition: none; } }

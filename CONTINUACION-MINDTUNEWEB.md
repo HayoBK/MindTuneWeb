@@ -178,3 +178,27 @@ de consola. Remitente `MindTune <contacto@mindtune.cl>` ya estaba verificado en 
 **Pendiente de Hayo:** crear la clave API en Brevo y cargarla con `wrangler secret put`; recién
 ahí el endpoint funciona. Sigue pendiente la autenticación del dominio en la cuenta nueva (mejora
 la entregabilidad del aviso y hace falta el día que se escriba a la lista).
+
+## 2026-09-20 (tarde) — Las dos tarjetas de early adopter son atajos; repaso en iPhone
+
+Hayo: en el teléfono las descripciones de *pacientes* y *clínicos* quedaban largas y nada indicaba
+que más abajo había un formulario que completar.
+
+**Las tarjetas ahora son enlaces** (`<a href="#formulario-anticipado" data-perfil="…">`): tocarlas
+baja al formulario y deja marcado el camino que corresponde — el manejador `[data-perfil]` que ya
+existía para el botón de la portada hace el resto. Cada una cierra con **"Este soy yo, anotarme →"**
+en teal, que es lo que vuelve obvio el gesto; la flecha se corre al pasar el cursor. El texto del
+clínico se acortó (salió la enumeración larga y la frase del panel, que ahora vive en el pop-up).
+Sin JS igual funcionan: son anclas de verdad.
+
+**Tres arreglos de teléfono que salieron del repaso:**
+- `.mt-seccion { scroll-margin-top: 88px }` y lo mismo en `#formulario-anticipado`: la cabecera
+  pegajosa se estaba comiendo la etiqueta de sección al llegar desde el menú.
+- El conmutador *Tengo tinnitus / Soy profesional de salud* ocupa el ancho completo y se parte en
+  dos mitades iguales bajo 600 px; antes quedaba dentado.
+- `text-wrap: pretty` en titulares bajo 620 px: `balance` dejaba líneas colgando de dos palabras
+  en títulos de cuatro líneas.
+
+**Revisado** en 390×844 y 375×667 con UA y touch de iPhone: sin scroll horizontal (`scrollWidth`
+igual al ancho de ventana), sin errores de consola, y al tocar la tarjeta de clínico el formulario
+queda a 96 px del borde con el camino ya marcado y los campos extra visibles.
