@@ -202,3 +202,32 @@ Sin JS igual funcionan: son anclas de verdad.
 **Revisado** en 390×844 y 375×667 con UA y touch de iPhone: sin scroll horizontal (`scrollWidth`
 igual al ancho de ventana), sin errores de consola, y al tocar la tarjeta de clínico el formulario
 queda a 96 px del borde con el camino ya marcado y los campos extra visibles.
+
+## 2026-09-21 — Favicon e íconos del sitio
+
+**Punto de partida.** El favicon ya existía y ya estaba enlazado (`static/favicon.svg`, copia del
+appicon de placa clara, con ~8 KB de metadatos C2PA pegados). Lo que faltaba era todo lo demás:
+no había `favicon.ico` (los navegadores lo piden solo a la raíz y devolvía 404), el
+`apple-touch-icon` apuntaba a un SVG —que iOS **ignora**: ahí tiene que ir un PNG de 180— y no
+había PNG de 192/512 ni manifest.
+
+**Decisión de Hayo.** El favicon usa la **placa oscura del sitio** (`#0E1620`, anillo `#E6EDF3`,
+señal `#4CB5A5`) con la marca casi al borde: es la única variante que a 16 px deja leer los cinco
+segmentos y la pieza suelta. Se descartaron la placa clara actual y la versión sin placa (esta
+última desaparece sobre pestaña clara).
+
+**Hecho.** `bin/generar-favicon.py` (Pillow) dibuja todo desde la geometría canónica de la marca
+—los arcos del SVG salen idénticos, byte a byte, a `static/brand/mindtune_mark_dark.svg`— y escribe
+`static/favicon.svg` (576 bytes, sin metadatos), `static/favicon.ico` (16/32/48, cada tamaño
+dibujado a su medida), `static/apple-touch-icon.png` (180, opaco y sin esquinas redondeadas: iOS
+aplica su máscara y rechaza alfa), `static/icon-192.png` y `static/icon-512.png`. Más
+`static/site.webmanifest` (`display: browser` — el sitio es el sitio, la app está en la App Store).
+`layouts/partials/head.html` enlaza los cuatro.
+
+El apple-touch-icon y los PNG del manifest llevan el margen del ícono de iOS (inset 0,88), que es
+lo que la máscara redondeada del sistema necesita; el favicon no.
+
+**Para regenerar:** `python3 bin/generar-favicon.py` desde la raíz del repo.
+
+**Ojo con el caché.** Los favicons se cachean con ganas: para verificar el cambio, recarga dura o
+abre `https://mindtune.cl/favicon.ico` directo.
