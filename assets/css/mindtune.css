@@ -197,6 +197,14 @@ strong { font-weight: 500; color: var(--texto); }
 .mt-tarjeta__nota { font-size: 15px; line-height: 22px; color: var(--apagado); }
 @media (max-width: 600px) { .mt-tarjeta { padding: 22px; } .mt-tarjeta .mt-boton { align-self: stretch; } }
 
+/* Cómo se ve: el video de la app dentro de un marco de vidrio (sin autoplay: el dosel ya se mueve) */
+.mt-video { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.mt-video__texto { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 18px; padding: 4px 8px 0; }
+.mt-video__texto p { margin: 0; font-size: 15px; line-height: 22px; color: var(--texto-sec); }
+.mt-video__player { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
+  border: 1px solid var(--borde); border-radius: var(--r-control); background: var(--bg); }
+@media (max-width: 600px) { .mt-video { padding: 12px; } }
+
 /* Modalidades: la autónoma y la acompañada */
 .mt-modalidad { position: relative; }
 .mt-modalidad__rotulo { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; line-height: 17px;

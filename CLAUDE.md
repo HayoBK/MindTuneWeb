@@ -26,9 +26,15 @@ y (2) es la portada del producto: qué hace, dónde se indica, y suscripción a 
 
 - **Hugo extended 0.162.1, autocontenido**: sin tema externo, sin módulos Go, sin npm. Plantillas
   en `layouts/`, CSS en `assets/css/mindtune.css` (pasa por `minify | fingerprint` en `head.html`).
-- **Hosting: Cloudflare Pages** (D-W1), conectado al repo GitHub `HayoBK/MindTuneWeb`, rama `main`.
-  Build: `hugo --gc --minify`, variable `HUGO_VERSION=0.162.1`. No hay workflow de GitHub Actions
-  ni `CNAME`: el dominio se configura en el panel de Cloudflare. Ver `GUIA-DEPLOY-MINDTUNEWEB.md`.
+- **Hosting: un Worker de Cloudflare propio** (desde el 2026-09-20, cuando el formulario pasó a
+  `/api/inscribir`). Se configura en `wrangler.jsonc`: sirve `public/` como assets, atiende la API
+  en `src/worker.js` y registra `mindtune.cl` y `www.mindtune.cl` como dominios propios.
+  **Publicar es `npx wrangler deploy` desde el Mac, no `git push`**: `public/` está en `.gitignore`,
+  así que el push solo respalda el código. Ciclo completo:
+  `HUGO_ENVIRONMENT=production hugo --gc --minify && npx wrangler deploy`.
+  (Antes era Cloudflare Pages conectado al repo —D-W1—, y los pasos de ese montaje quedaron en
+  `GUIA-DEPLOY-MINDTUNEWEB.md` como historia; el ciclo de edición de esa guía ya está corregido.)
+  No hay workflow de GitHub Actions ni `CNAME`.
 - **DNS y correo**: Cloudflare (Email Routing `hola@mindtune.cl` → correo de Hayo).
 - **baseURL** es la raíz del dominio (`https://mindtune.cl/`), así que las rutas absolutas
   (`/fonts/…`, `/privacidad/`) funcionan; igual se usa `relURL`/`pageRef` en plantillas por hábito.
@@ -37,6 +43,7 @@ y (2) es la portada del producto: qué hace, dónde se indica, y suscripción a 
 ## Reglas de oro
 
 1. **Build verde antes de commitear**: `HUGO_ENVIRONMENT=production hugo --minify` sin `ERROR`.
+   Y para que el cambio se vea en mindtune.cl falta `npx wrangler deploy`: el push no publica.
 2. **El sistema de diseño manda** (§0): un solo acento (`--acento`), bordes de 1 px y **nunca sombras**,
    piso de 15 px en todo lo que se lee, sin rojo, sin emoji, sin formas de onda, sin candados ni
    "desbloquear". Los tokens están en `:root` (oscuro) y en `@media (prefers-color-scheme: light)`.
@@ -59,6 +66,10 @@ y (2) es la portada del producto: qué hace, dónde se indica, y suscripción a 
    modelo MindTune; sin tarjeta de derivación ni botón de tomar hora (por eso `data/centros.yaml` quedó sin uso).
 7. Lo editable por dato va en `hugo.yaml` (`params`) o en `data/centros.yaml`; no en plantillas.
 8. Commits chicos, en español.
+9. **Iconos del sitio**: se generan con `python3 bin/generar-favicon.py` (Pillow) desde la geometría
+   canónica de la marca; no se editan a mano. Al regenerarlos hay que subir
+   `hugo.yaml → params.iconos_version`, que es lo que va en el `?v=` de los enlaces del `head`:
+   sin cambio de URL, el caché de favicons del navegador sigue mostrando el ícono viejo.
 
 ## Arquitectura
 
@@ -77,7 +88,8 @@ y (2) es la portada del producto: qué hace, dónde se indica, y suscripción a 
 - **Video de fondo (opcional):** si `params.video_fondo` trae un nombre y existe `static/video/<nombre>.mp4`,
   el video reemplaza a las capas dibujadas. `bin/preparar-video-dosel.sh` lo convierte y `GUIA-VIDEO-DE-FONDO.md`
   dice de dónde sacarlo. La CSP ya trae `media-src 'self'`.
-- `layouts/index.html` → portada: marca estática + chip de estado + titular; **Dos maneras de usarla**
+- `layouts/index.html` → portada: marca estática + chip de estado + titular; **Cómo se ve** (video de la app,
+  `static/video/preview.mp4` + póster, con controles y sin autoplay; se reemplaza el archivo, no la plantilla); **Dos maneras de usarla**
   (autónoma / con equipo de salud); **Perfil de Tinnitus** (por qué hay perfiles distintos + las cuatro
   dimensiones); **Terapias** (las cuatro, cada una con a qué perfil sirve; íconos en
   `partials/icono-terapia.html`, matices §4.15); **Aprender** (programa formativo, cuatro ramas) junto a

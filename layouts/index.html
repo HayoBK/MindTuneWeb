@@ -13,6 +13,23 @@
   <p class="mt-portada__nota">Versión piloto · todavía no está en las tiendas · iPhone primero · en español</p>
 </section>
 
+<section class="mt-seccion mt-seccion--ajustada" id="como-se-ve" aria-labelledby="t-como-se-ve">
+  <div class="mt-contenedor">
+    <div class="mt-vidrio mt-video mt-aparece">
+      <div class="mt-video__texto">
+        <div class="mt-etiqueta" id="t-como-se-ve">Cómo se ve</div>
+        <p>Treinta segundos de la app piloto, tal como corre hoy en un iPhone. Sin sonido.</p>
+      </div>
+      <video class="mt-video__player" controls playsinline preload="none"
+             poster="{{ "video/preview-poster.jpg" | relURL }}"
+             width="1920" height="1080" aria-label="Recorrido de 30 segundos por la app MindTune">
+        <source src="{{ "video/preview.mp4" | relURL }}" type="video/mp4">
+        Tu navegador no reproduce este video. <a href="{{ "video/preview.mp4" | relURL }}">Descárgalo</a>.
+      </video>
+    </div>
+  </div>
+</section>
+
 <section class="mt-seccion" id="modalidades" aria-labelledby="t-modalidades">
   <div class="mt-contenedor">
     <div class="mt-seccion__intro mt-seccion__intro--centrada mt-aparece">

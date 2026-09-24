@@ -231,3 +231,40 @@ lo que la máscara redondeada del sistema necesita; el favicon no.
 
 **Ojo con el caché.** Los favicons se cachean con ganas: para verificar el cambio, recarga dura o
 abre `https://mindtune.cl/favicon.ico` directo.
+
+## 2026-09-21 (tarde) — El favicon estaba publicado; lo que faltaba era el caché y la doc del deploy
+
+**Verificado en vivo** (navegador, sin caché): `mindtune.cl` sirve `/favicon.ico` (200,
+`image/vnd.microsoft.icon`, 5.895 bytes, con 16/32/48 dentro), `/favicon.svg` (576 bytes),
+`/apple-touch-icon.png`, `/icon-192.png` y `/site.webmanifest`, y el `<head>` publicado trae los
+cuatro enlaces. Igual en `www.mindtune.cl`. **El sitio estaba bien**: lo que mostraba el ícono
+viejo era el caché de favicons del navegador, que no se refresca con recarga dura.
+
+**Hecho.** `hugo.yaml → params.iconos_version` (hoy `"2026-09-21"`) y el `?v=` correspondiente en
+los cuatro enlaces del `head`. Al regenerar iconos hay que subir esa fecha: es la única forma de
+que el navegador vuelva a pedirlos.
+
+**Corregida la documentación del hosting, que estaba desactualizada y es trampa cara.** `CLAUDE.md`
+y `GUIA-DEPLOY-MINDTUNEWEB.md` decían "Cloudflare Pages conectado a GitHub, publica solo con el
+push". Desde el 2026-09-20 el sitio lo sirve el **Worker** de `wrangler.jsonc`, que sube `public/`
+—y `public/` está en `.gitignore`—, así que **el push no publica: publica `npx wrangler deploy`**.
+El Bloque 3 de la guía ya lleva ese paso; los Bloques 1–2 y Pasos A–C quedan como historia del
+montaje con Pages.
+
+## 2026-09-23 — Sección «Cómo se ve»: video preview de la app en la portada
+
+**Hecho (Cowork).** Nueva sección `#como-se-ve` en `layouts/index.html`, entre la portada y «Dos maneras
+de usarla»: marco `.mt-vidrio.mt-video` con etiqueta, una línea de texto y un `<video controls playsinline
+preload="none">` con póster. **Sin autoplay** a propósito (el dosel ya se mueve). CSS `.mt-video*` en
+`assets/css/mindtune.css` (borde 1 px, sin sombra). Archivos en `static/video/preview.mp4` (1080p, 30 fps,
+31 s, sin audio, 3 MB) y `static/video/preview-poster.jpg`. La CSP ya permitía `media-src 'self'`.
+
+**Origen del video.** Grabación real del iPhone (QuickTime) compuesta por Cowork en HTML/Playwright/ffmpeg
+(fuentes en la carpeta OneDrive `MindTune2027/Presentacion_Colegas_2026-09/`). Siete planos con títulos:
+terapias de sonido en el teléfono · la música del paciente como vehículo · perfil guía la recomendación ·
+cuatro modalidades · dos maneras de usarla · modo autónomo · modo acompañado. Es la **variante web**: dos
+bajadas se reescribieron en voz de paciente (la versión para colegas vive en la carpeta de la presentación).
+Revisado contra D-L8 (sin eficacia ni cifras) y contra la regla 6-bis (doble modalidad).
+
+**Pendiente (Hayo, en Claude Code):** build verde + `npx wrangler deploy` + commit. Si más adelante hay
+video con tinnitumetría o con la Lección 0, se reemplaza el mismo archivo sin tocar plantillas.

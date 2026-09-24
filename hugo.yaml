@@ -11,6 +11,11 @@ params:
   # Estado que se muestra en el chip de la portada
   estado: "Versión piloto · acceso anticipado"
   correo: "contacto@mindtune.cl"
+  # Versión de los iconos del sitio (favicon, apple-touch-icon, manifest).
+  # Los navegadores cachean los favicons con TTL larguísima y una recarga dura NO los
+  # refresca: solo un cambio de URL los obliga a pedirlos de nuevo. Al regenerar los
+  # iconos con bin/generar-favicon.py, sube esta fecha y se publica el cambio.
+  iconos_version: "2026-09-21"
   # Razón social de la EIRL: NO se muestra en la web por ahora (decisión de Hayo, 2026-09-11). Cuando la entregue, va aquí y en privacidad/términos.
   razon_social: ""
   ciudad: "Santiago de Chile"

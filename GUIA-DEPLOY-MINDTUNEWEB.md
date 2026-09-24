@@ -5,6 +5,12 @@
 > Cloudflare** que solo puedes hacer tú porque piden tus credenciales. Tiempo total: 20–30 min.
 > Modelo recomendado para Claude Code en esta tarea: **Sonnet**.
 
+> ⚠️ **Corregido el 2026-09-21.** Los Bloques 1–2 y los Pasos A–C son el montaje original con
+> **Cloudflare Pages conectado a GitHub** y quedan solo como historia: desde el 2026-09-20 el sitio
+> lo sirve un **Worker propio** (`wrangler.jsonc` + `src/worker.js`), que además atiende
+> `/api/inscribir`. Lo que se usa hoy es el **Bloque 3**, ya corregido más abajo:
+> publicar es `npx wrangler deploy`, no `git push`.
+
 Estado de partida: el sitio ya está escrito en `~/Git_Web/MindTuneWeb`, `mindtune.cl` está
 inscrito en NIC Chile y el dominio ya está agregado en Cloudflare (nameservers cambiados).
 
@@ -109,7 +115,7 @@ correo en el dominio.
 
 ---
 
-## Bloque 3 — Ciclo de edición de aquí en adelante
+## Bloque 3 — Ciclo de edición de aquí en adelante (vigente)
 
 Cada vez que Cowork cambie archivos del sitio, en Claude Code:
 
@@ -117,12 +123,24 @@ Cada vez que Cowork cambie archivos del sitio, en Claude Code:
 Valida y publica los cambios del sitio MindTune:
 1. git status (muéstrame qué cambió)
 2. HUGO_ENVIRONMENT=production hugo --minify --gc  (sin ERROR)
-3. git add -A && git commit -m "<mensaje corto en español que describa el cambio>"
-4. git push
-Cloudflare Pages publica solo con el push; dime cuando termine.
+3. npx wrangler deploy   ← esto es lo que publica en mindtune.cl
+4. git add -A && git commit -m "<mensaje corto en español que describa el cambio>"
+5. git push
+Dime la URL del deploy y cuando termine.
 ```
 
-En Cloudflare, **Workers & Pages → mindtune → Deployments** muestra cada publicación y su log.
+**El orden importa y el paso 3 no es opcional.** `public/` está en `.gitignore`, así que el push
+a GitHub respalda el código pero no publica nada: lo que Cloudflare sirve es la carpeta `public/`
+que sube `wrangler deploy` desde el Mac. Si cambiaste solo texto o plantillas y se te olvida el
+paso 3, el sitio sigue mostrando la versión anterior.
+
+En Cloudflare, **Workers & Pages → mindtuneweb** muestra cada publicación y sus logs.
+
+**Si el cambio es un icono** (favicon, apple-touch-icon): los navegadores cachean los favicons
+con TTL larguísima y una recarga dura **no** los refresca. Sube
+`hugo.yaml → params.iconos_version` antes del build: eso cambia el `?v=` de los enlaces y los
+obliga a pedirlos de nuevo. Para verificar, abre `https://mindtune.cl/favicon.ico` directo o el
+sitio en una ventana de incógnito.
 
 ---
 
