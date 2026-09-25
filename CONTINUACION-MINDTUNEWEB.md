@@ -268,3 +268,11 @@ Revisado contra D-L8 (sin eficacia ni cifras) y contra la regla 6-bis (doble mod
 
 **Pendiente (Hayo, en Claude Code):** build verde + `npx wrangler deploy` + commit. Si más adelante hay
 video con tinnitumetría o con la Lección 0, se reemplaza el mismo archivo sin tocar plantillas.
+
+## 2026-09-25 — «Cómo se ve»: el video parte solo
+
+**Hecho (Cowork), a pedido de Hayo.** Revierte el «sin autoplay» del 2026-09-23. El `<video>` lleva
+`muted loop data-autoplay` (sigue con `controls playsinline preload="none"` y póster) y `partials/guiones.html`
+lo enciende con un `IntersectionObserver` (umbral 0,5) cuando se ve en pantalla y lo pausa al salir, así no
+descarga los 3 MB a quien no baja hasta ahí. Con `prefers-reduced-motion` no parte (queda el póster). Si la
+persona lo pausa a mano, no se vuelve a encender solo.

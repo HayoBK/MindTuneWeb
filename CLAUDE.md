@@ -89,7 +89,7 @@ y (2) es la portada del producto: qué hace, dónde se indica, y suscripción a 
   el video reemplaza a las capas dibujadas. `bin/preparar-video-dosel.sh` lo convierte y `GUIA-VIDEO-DE-FONDO.md`
   dice de dónde sacarlo. La CSP ya trae `media-src 'self'`.
 - `layouts/index.html` → portada: marca estática + chip de estado + titular; **Cómo se ve** (video de la app,
-  `static/video/preview.mp4` + póster, con controles y sin autoplay; se reemplaza el archivo, no la plantilla); **Dos maneras de usarla**
+  `static/video/preview.mp4` + póster, con controles, silenciado y en bucle; parte solo al verse en pantalla —`data-autoplay` + `guiones.html`— y no con «reducir movimiento»; se reemplaza el archivo, no la plantilla); **Dos maneras de usarla**
   (autónoma / con equipo de salud); **Perfil de Tinnitus** (por qué hay perfiles distintos + las cuatro
   dimensiones); **Terapias** (las cuatro, cada una con a qué perfil sirve; íconos en
   `partials/icono-terapia.html`, matices §4.15); **Aprender** (programa formativo, cuatro ramas) junto a

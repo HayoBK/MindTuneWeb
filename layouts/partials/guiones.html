@@ -27,6 +27,24 @@
     nodos.forEach(function (n) { obs.observe(n); });
   }
 
+  // ---------- Video «Cómo se ve»: parte solo al verse, se pausa al salir ----------
+  // Silenciado (condición de los navegadores para el autoplay). Con «reducir movimiento» no parte:
+  // queda el póster y el botón de play. Si la persona lo pausa a mano, no se vuelve a encender solo.
+  document.querySelectorAll('video[data-autoplay]').forEach(function (v) {
+    if (reducido || !('IntersectionObserver' in window)) return;
+    var pausadoAMano = false, porCodigo = false;
+    v.muted = true;
+    v.addEventListener('pause', function () { if (!porCodigo) pausadoAMano = true; porCodigo = false; });
+    v.addEventListener('play', function () { pausadoAMano = false; });
+    new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (e) {
+        if (e.isIntersecting) {
+          if (!pausadoAMano && v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }
+        } else if (!v.paused) { porCodigo = true; v.pause(); }
+      });
+    }, { threshold: 0.5 }).observe(v);
+  });
+
   // ---------- Acceso anticipado: un formulario, dos caminos ----------
   var form = document.getElementById('formulario-anticipado');
   if (!form) return;

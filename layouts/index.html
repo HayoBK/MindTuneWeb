@@ -20,7 +20,7 @@
         <div class="mt-etiqueta" id="t-como-se-ve">Cómo se ve</div>
         <p>Treinta segundos de la app piloto, tal como corre hoy en un iPhone. Sin sonido.</p>
       </div>
-      <video class="mt-video__player" controls playsinline preload="none"
+      <video class="mt-video__player" controls muted loop playsinline preload="none" data-autoplay
              poster="{{ "video/preview-poster.jpg" | relURL }}"
              width="1920" height="1080" aria-label="Recorrido de 30 segundos por la app MindTune">
         <source src="{{ "video/preview.mp4" | relURL }}" type="video/mp4">
